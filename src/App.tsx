@@ -82,11 +82,11 @@ const AudioPlayer = () => {
         <span className="text-sm text-slate-200">Hi, I'm Shahid</span>
       </div>
 
-      {/* Audio Element - Direct Google Drive Streaming Link */}
+      {/* Audio Element - USING LOCAL FILE from public folder */}
+      {/* Ensure "intro.mp3" is inside the "public" folder */}
       <audio
         ref={audioRef}
-        // Converted view link to direct streaming link using export=download&id=
-        src="https://drive.google.com/uc?export=download&id=14ut5ag9l0UwF6xXuhPsmQxKexNfoYMC4"
+        src="/intro.mp3"
         onEnded={() => setIsPlaying(false)}
         className="hidden"
       />
