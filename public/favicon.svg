@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path 
+      d="M50 5 L93.3 30 V80 L50 105 L6.7 80 V30 L50 5Z" 
+      fill="#0f172a"
+      stroke="#475569" 
+      stroke-width="4" 
+    />
+    <path 
+      d="M65 35 H45 C35 35 35 50 45 50 H55 C65 50 65 65 55 65 H35" 
+      stroke="url(#gradient)" 
+      stroke-width="8" 
+      stroke-linecap="round" 
+    />
+    <circle cx="65" cy="35" r="4" fill="#60a5fa" />
+    <circle cx="35" cy="65" r="4" fill="#e879f9" />
+    <defs>
+      <linearGradient id="gradient" x1="35" y1="35" x2="65" y2="65" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#a855f7" />
+        <stop offset="1" stop-color="#3b82f6" />
+      </linearGradient>
+    </defs>
+</svg>
