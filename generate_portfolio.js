@@ -245,7 +245,14 @@ const AudioPlayer = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        // Handle play promise to catch potential autoplay errors
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.error("Audio playback failed:", error);
+            setIsPlaying(false);
+          });
+        }
       }
       setIsPlaying(!isPlaying);
     }
@@ -265,10 +272,10 @@ const AudioPlayer = () => {
         <span className="text-sm text-slate-200">Hi, I'm Shahid</span>
       </div>
 
-      {/* Audio Element */}
+      {/* Audio Element - using encodeURIComponent to handle spaces safely */}
       <audio
         ref={audioRef}
-        src="/intro.wav"
+        src={"/" + encodeURIComponent("AI voice - Shahid.wav")}
         onEnded={() => setIsPlaying(false)}
         className="hidden"
       />
@@ -372,7 +379,7 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
