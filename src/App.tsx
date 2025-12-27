@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Database, 
   Cloud, 
-  Server, 
   Terminal, 
-  Code2, 
   Mail, 
   Linkedin, 
   Github, 
   Instagram,
   ChevronDown,
   ExternalLink,
-  Cpu,
   Zap,
   Menu,
   X,
@@ -47,7 +44,6 @@ const Logo = () => (
 );
 
 const App = () => {
-  const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -63,7 +59,6 @@ const App = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(id);
       setIsMobileMenuOpen(false); 
     }
   };
