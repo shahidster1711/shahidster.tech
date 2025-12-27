@@ -272,10 +272,11 @@ const AudioPlayer = () => {
         <span className="text-sm text-slate-200">Hi, I'm Shahid</span>
       </div>
 
-      {/* Audio Element - using encodeURIComponent to handle spaces safely */}
+      {/* Audio Element - Direct Google Drive Streaming Link */}
       <audio
         ref={audioRef}
-        src={"/" + encodeURIComponent("AI voice - Shahid.wav")}
+        // Converted view link to direct streaming link using export=download&id=
+        src="https://drive.google.com/uc?export=download&id=14ut5ag9l0UwF6xXuhPsmQxKexNfoYMC4"
         onEnded={() => setIsPlaying(false)}
         className="hidden"
       />
