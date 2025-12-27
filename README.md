@@ -1,4 +1,4 @@
-hahid Moosa — Cloud Database Support Engineer Portfolio
+Shahid Moosa — Cloud Database Support Engineer Portfolio
 
 Welcome to the source code for my personal portfolio website: https://shahidster.tech
 
