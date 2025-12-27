@@ -107,6 +107,7 @@ export default {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'fade-in-down': 'fadeInDown 0.5s ease-out',
         'blink': 'blink 1s step-end infinite',
+        'sound-wave': 'sound-wave 1.2s ease-in-out infinite',
       },
       keyframes: {
         fadeInDown: {
@@ -116,6 +117,10 @@ export default {
         blink: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
+        },
+        'sound-wave': {
+          '0%, 100%': { height: '4px' },
+          '50%': { height: '16px' },
         }
       }
     },
@@ -183,7 +188,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }`,
 
-  'src/App.tsx': `import { useState, useEffect } from 'react';
+  'src/App.tsx': `import { useState, useEffect, useRef } from 'react';
 import { 
   Database, 
   Cloud, 
@@ -200,7 +205,10 @@ import {
   Shield,
   Lock,
   CheckCircle2,
-  GraduationCap
+  GraduationCap,
+  Play,
+  Pause,
+  Volume2
 } from 'lucide-react';
 
 // Custom Logo Component
@@ -227,6 +235,58 @@ const Logo = () => (
     </defs>
   </svg>
 );
+
+const AudioPlayer = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  return (
+    <div className="mt-6 inline-flex items-center gap-4 p-2 pr-6 bg-slate-900/50 border border-slate-800 rounded-full hover:border-fuchsia-500/30 transition-colors">
+      <button
+        onClick={togglePlay}
+        className="w-10 h-10 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 flex items-center justify-center text-white transition-transform hover:scale-105"
+      >
+        {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-1" />}
+      </button>
+      
+      <div className="flex flex-col">
+        <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Voice Intro</span>
+        <span className="text-sm text-slate-200">Hi, I'm Shahid</span>
+      </div>
+
+      {/* Audio Element */}
+      <audio
+        ref={audioRef}
+        src="/intro.wav"
+        onEnded={() => setIsPlaying(false)}
+        className="hidden"
+      />
+
+      {/* Simple Visualizer */}
+      {isPlaying ? (
+        <div className="flex gap-1 h-4 items-center ml-2">
+           <span className="w-1 bg-fuchsia-400 rounded-full animate-sound-wave" style={{animationDelay: '0ms'}}></span>
+           <span className="w-1 bg-fuchsia-400 rounded-full animate-sound-wave" style={{animationDelay: '200ms'}}></span>
+           <span className="w-1 bg-fuchsia-400 rounded-full animate-sound-wave" style={{animationDelay: '400ms'}}></span>
+           <span className="w-1 bg-fuchsia-400 rounded-full animate-sound-wave" style={{animationDelay: '100ms'}}></span>
+        </div>
+      ) : (
+        <Volume2 size={16} className="text-slate-500 ml-2" />
+      )}
+    </div>
+  );
+};
 
 const TerminalWidget = () => {
   const [text, setText] = useState('');
@@ -263,7 +323,6 @@ const TerminalWidget = () => {
   }, []);
 
   return (
-    // Updated: Changed from absolute positioning to block flow with margins to prevent overlap
     <div className="hidden lg:block w-full max-w-md mt-12 bg-slate-950/90 backdrop-blur-sm rounded-lg border border-fuchsia-500/30 shadow-2xl shadow-fuchsia-500/10 overflow-hidden font-mono text-xs transform hover:scale-[1.02] transition-transform duration-300">
       {/* Terminal Header */}
       <div className="bg-slate-900 px-3 py-2 border-b border-slate-800 flex items-center justify-between">
@@ -452,11 +511,19 @@ const App = () => {
                 </a>
               </div>
 
-              <div className="flex space-x-6 pt-8 text-slate-500 justify-start">
-                <a href="https://github.com/shahidster1711/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Github size={24} /></a>
-                <a href="https://www.linkedin.com/in/shahidmoosa/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Linkedin size={24} /></a>
-                <a href="https://www.instagram.com/_shahidster_/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Instagram size={24} /></a>
-                <a href="mailto:connect2shahidmoosa@gmail.com" className="hover:text-fuchsia-400 transition-colors"><Mail size={24} /></a>
+              {/* Social Links & Audio */}
+              <div className="flex flex-col gap-6 pt-4">
+                <div className="flex space-x-6 text-slate-500 justify-start">
+                  <a href="https://github.com/shahidster1711/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Github size={24} /></a>
+                  <a href="https://www.linkedin.com/in/shahidmoosa/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Linkedin size={24} /></a>
+                  <a href="https://www.instagram.com/_shahidster_/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Instagram size={24} /></a>
+                  <a href="mailto:connect2shahidmoosa@gmail.com" className="hover:text-fuchsia-400 transition-colors"><Mail size={24} /></a>
+                </div>
+                
+                {/* Audio Player */}
+                <div className="w-fit">
+                  <AudioPlayer />
+                </div>
               </div>
 
               {/* SingleStore Endorsement Section */}
@@ -687,8 +754,8 @@ const App = () => {
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-fuchsia-500 group-hover:scale-125 transition-transform"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                  <h3 className="text-xl font-bold text-slate-200">Senior Cloud Support Engineer</h3>
-                  <span className="text-sm font-mono text-fuchsia-400">2021 - Present</span>
+                  <h3 className="text-xl font-bold text-slate-200">Database Cloud Support Engineer</h3>
+                  <span className="text-sm font-mono text-fuchsia-400">Jan 2024 - Present</span>
                 </div>
                 <h4 className="text-lg text-slate-400 mb-4 flex items-center gap-2">
                   <img 
@@ -699,10 +766,10 @@ const App = () => {
                   SingleStore DB
                 </h4>
                 <p className="mb-4">
-                  Led a team of support engineers resolving critical P0 incidents for enterprise database clusters. Implemented automated health checks using Python, reducing incident detection time by 40%.
+                  Provide Tier-2/3 support for SingleStore's cloud-native and on-premise databases. Troubleshoot complex infrastructure issues using SQL, NoSQL, Linux, and AWS tools. Collaborate with product engineering to accelerate incident resolution.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {['AWS', 'PostgreSQL', 'Python'].map(tag => (
+                  {['SingleStore', 'SQL', 'Linux', 'AWS', 'Python'].map(tag => (
                     <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
                   ))}
                 </div>
@@ -712,15 +779,38 @@ const App = () => {
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                  <h3 className="text-xl font-bold text-slate-200">Database Administrator</h3>
-                  <span className="text-sm font-mono text-fuchsia-400">2018 - 2021</span>
+                  <h3 className="text-xl font-bold text-slate-200">Cloud Support Associate</h3>
+                  <span className="text-sm font-mono text-fuchsia-400">July 2022 - Jan 2024</span>
                 </div>
-                <h4 className="text-lg text-slate-400 mb-4">DataFlow Systems</h4>
+                <h4 className="text-lg text-slate-400 mb-4 flex items-center gap-2">
+                  <div className="p-0.5 bg-white/10 rounded">
+                    <Cloud size={18} className="text-yellow-500" />
+                  </div>
+                  Amazon Web Services (AWS)
+                </h4>
                 <p className="mb-4">
-                  Managed on-premise Oracle and MySQL databases. Performed major version upgrades, optimized slow queries, and maintained backup/recovery strategies ensuring 99.99% uptime.
+                  Delivered technical support for Amazon Aurora, RDS, and AWS DMS. Specialized in AWS services (EC2, IAM, VPC, S3). Authored knowledge-base articles on IAM configuration and database optimization.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {['Oracle', 'MySQL', 'Linux'].map(tag => (
+                  {['AWS RDS', 'Aurora', 'PostgreSQL', 'DMS'].map(tag => (
+                    <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Job 3 */}
+              <div className="relative md:ml-12 group">
+                <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
+                  <h3 className="text-xl font-bold text-slate-200">Senior System Associate</h3>
+                  <span className="text-sm font-mono text-fuchsia-400">Apr 2020 - July 2022</span>
+                </div>
+                <h4 className="text-lg text-slate-400 mb-4">Infosys</h4>
+                <p className="mb-4">
+                  Administered SCCM and Windows systems for 100+ users, achieving 99% uptime. Managed Medical Coding operations and document control processes under EDF standards.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['SCCM', 'Windows Admin', 'Linux', 'PowerShell'].map(tag => (
                     <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
                   ))}
                 </div>
