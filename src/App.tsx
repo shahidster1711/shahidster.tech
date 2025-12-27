@@ -136,6 +136,7 @@ const TerminalWidget = () => {
 
   return (
     <div className="hidden lg:block w-full max-w-md mt-12 bg-slate-950/90 backdrop-blur-sm rounded-lg border border-fuchsia-500/30 shadow-2xl shadow-fuchsia-500/10 overflow-hidden font-mono text-xs transform hover:scale-[1.02] transition-transform duration-300">
+      {/* Terminal Header */}
       <div className="bg-slate-900 px-3 py-2 border-b border-slate-800 flex items-center justify-between">
         <div className="flex space-x-2">
           <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
@@ -145,6 +146,7 @@ const TerminalWidget = () => {
         <div className="text-slate-500 text-[10px]">singlestore-cli — 80x24</div>
       </div>
       
+      {/* Terminal Body */}
       <div className="p-4 text-fuchsia-300 min-h-[180px]">
         <div className="flex flex-wrap">
           <span className="text-blue-400 mr-2">singlestore&gt;</span>
@@ -202,13 +204,16 @@ const App = () => {
             backgroundSize: '24px 24px'
           }}
         />
+        {/* Animated Glow Orbs */}
         <div className="absolute -top-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[100px] animate-pulse-slow" />
         <div className="absolute -bottom-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[100px] animate-pulse-slow delay-1000" />
       </div>
 
+      {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4' : 'bg-transparent py-6'}`}>
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
           
+          {/* Logo & Brand Area */}
           <div 
             className="flex items-center gap-3 cursor-pointer group z-50" 
             onClick={() => scrollToSection('home')}
@@ -222,6 +227,7 @@ const App = () => {
             </div>
           </div>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-sm font-medium">
             {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
               <button
@@ -235,6 +241,7 @@ const App = () => {
             ))}
           </div>
 
+          {/* Mobile Menu Toggle */}
           <button 
             className="md:hidden text-slate-300 hover:text-white z-50"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -243,6 +250,7 @@ const App = () => {
           </button>
         </div>
 
+        {/* Mobile Navigation Overlay */}
         {isMobileMenuOpen && (
           <div className="absolute top-0 left-0 w-full h-screen bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 md:hidden z-40 animate-fade-in-down">
             {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
@@ -260,10 +268,12 @@ const App = () => {
 
       <main className="relative z-10">
         
+        {/* Hero Section */}
         <section id="home" className="min-h-screen flex items-center pt-24 md:pt-20 relative">
           
           <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
             
+            {/* Text Content - Left Column */}
             <div className="space-y-6 order-2 md:order-1">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-green-900/20 border border-green-500/30 text-green-300 text-sm">
                 <span className="relative flex h-2 w-2">
@@ -313,6 +323,7 @@ const App = () => {
                 </a>
               </div>
 
+              {/* Social Links & Audio */}
               <div className="flex flex-col gap-6 pt-4">
                 <div className="flex space-x-6 text-slate-500 justify-start">
                   <a href="https://github.com/shahidster1711/" target="_blank" rel="noopener noreferrer" className="hover:text-fuchsia-400 transition-colors"><Github size={24} /></a>
@@ -321,11 +332,13 @@ const App = () => {
                   <a href="mailto:connect2shahidmoosa@gmail.com" className="hover:text-fuchsia-400 transition-colors"><Mail size={24} /></a>
                 </div>
                 
+                {/* Audio Player */}
                 <div className="w-fit">
                   <AudioPlayer />
                 </div>
               </div>
 
+              {/* SingleStore Endorsement Section */}
               <div className="mt-8 pt-8 border-t border-slate-800/50 max-w-md">
                  <p className="text-xs text-slate-500 mb-3 font-semibold uppercase tracking-widest flex items-center gap-2">
                    <Zap size={12} className="text-fuchsia-400" />
@@ -358,11 +371,15 @@ const App = () => {
               </div>
             </div>
 
+            {/* Right Column: Image and Terminal (Stacked) */}
             <div className="order-1 md:order-2 flex flex-col items-center justify-center relative mt-8 md:mt-0 lg:-mt-24">
+              {/* Image Container */}
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 group mb-8">
+                {/* Decorative rings */}
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-fuchsia-600 to-blue-600 opacity-75 blur transition duration-500 group-hover:opacity-100" />
                 <div className="absolute -inset-4 rounded-full border border-slate-700/50 scale-90 transition duration-700 group-hover:scale-100" />
                 
+                {/* Main Image Container */}
                 <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-slate-950 bg-slate-900 flex items-center justify-center">
                   <img 
                     src="/IMG_1601.jpeg" 
@@ -374,6 +391,7 @@ const App = () => {
                       e.currentTarget.nextSibling.style.display = 'flex';
                     }}
                   />
+                  {/* Fallback if image fails to load */}
                   <div className="hidden absolute inset-0 flex-col items-center justify-center bg-slate-800 text-slate-500 p-4 text-center">
                     <Database size={48} className="mb-2 text-fuchsia-500" />
                     <span className="text-sm">Image not found.<br/>Ensure IMG_1601.jpeg is in the same folder.</span>
@@ -381,6 +399,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Terminal Widget - Placed below image in the grid flow */}
               <TerminalWidget />
             </div>
           </div>
@@ -417,6 +436,7 @@ const App = () => {
             </h2>
 
             <div className="grid md:grid-cols-3 gap-8">
+              {/* Database Skills */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-fuchsia-500/50 transition-all group">
                 <div className="w-12 h-12 bg-fuchsia-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-fuchsia-600 transition-colors">
                   <Database className="text-fuchsia-400 group-hover:text-white" />
@@ -432,6 +452,7 @@ const App = () => {
                 </ul>
               </div>
 
+              {/* Cloud Skills */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group">
                 <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
                   <Cloud className="text-blue-400 group-hover:text-white" />
@@ -447,6 +468,7 @@ const App = () => {
                 </ul>
               </div>
 
+              {/* Support & Tools */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-green-500/50 transition-all group">
                 <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors">
                   <Terminal className="text-green-400 group-hover:text-white" />
@@ -474,6 +496,7 @@ const App = () => {
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* AWS */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-yellow-500/50 transition-all group hover:-translate-y-1">
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-500/20 transition-colors">
                    <Cloud className="text-yellow-500" />
@@ -486,6 +509,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Azure */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group hover:-translate-y-1">
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
                    <Cloud className="text-blue-500" />
@@ -498,6 +522,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Web App Pen Testing */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-red-500/50 transition-all group hover:-translate-y-1">
                  <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-500/20 transition-colors">
                    <Shield className="text-red-500" />
@@ -536,6 +561,7 @@ const App = () => {
             
             <div className="space-y-12 border-l-2 border-slate-800 ml-3 md:ml-0 pl-8 md:pl-0">
               
+              {/* Job 1 */}
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-fuchsia-500 group-hover:scale-125 transition-transform"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
@@ -560,6 +586,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Job 2 */}
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
@@ -582,6 +609,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Job 3 */}
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
