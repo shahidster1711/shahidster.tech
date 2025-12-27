@@ -30,7 +30,7 @@ const Logo = () => (
       d="M65 35 H45 C35 35 35 50 45 50 H55 C65 50 65 65 55 65 H35" 
       stroke="url(#gradient)" 
       strokeWidth="8" 
-      strokeLinecap="round" 
+      stroke-linecap="round" 
     />
     <circle cx="65" cy="35" r="4" className="fill-blue-400" />
     <circle cx="35" cy="65" r="4" className="fill-fuchsia-400" />
@@ -42,6 +42,79 @@ const Logo = () => (
     </defs>
   </svg>
 );
+
+const TerminalWidget = () => {
+  const [text, setText] = useState('');
+  const [showResult, setShowResult] = useState(false);
+  
+  const query = "SELECT skill, level FROM expertise WHERE type = 'DB' ORDER BY level DESC;";
+  
+  useEffect(() => {
+    let currentIndex = 0;
+    let timeoutId;
+
+    const typeChar = () => {
+      if (currentIndex < query.length) {
+        setText(query.slice(0, currentIndex + 1));
+        currentIndex++;
+        timeoutId = setTimeout(typeChar, 50 + Math.random() * 50); // Random typing speed
+      } else {
+        // Finished typing
+        timeoutId = setTimeout(() => {
+          setShowResult(true);
+          // Reset loop after delay
+          setTimeout(() => {
+            setShowResult(false);
+            setText('');
+            currentIndex = 0;
+            typeChar();
+          }, 5000);
+        }, 500);
+      }
+    };
+
+    typeChar();
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  return (
+    // Updated: Changed from absolute positioning to block flow with margins to prevent overlap
+    <div className="hidden lg:block w-full max-w-md mt-12 bg-slate-950/90 backdrop-blur-sm rounded-lg border border-fuchsia-500/30 shadow-2xl shadow-fuchsia-500/10 overflow-hidden font-mono text-xs transform hover:scale-[1.02] transition-transform duration-300">
+      {/* Terminal Header */}
+      <div className="bg-slate-900 px-3 py-2 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex space-x-2">
+          <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+        </div>
+        <div className="text-slate-500 text-[10px]">singlestore-cli — 80x24</div>
+      </div>
+      
+      {/* Terminal Body */}
+      <div className="p-4 text-fuchsia-300 min-h-[180px]">
+        <div className="flex flex-wrap">
+          <span className="text-blue-400 mr-2">singlestore&gt;</span>
+          <span>{text}</span>
+          <span className="w-2 h-4 bg-fuchsia-500 ml-1 animate-blink inline-block align-middle"></span>
+        </div>
+
+        {showResult && (
+          <div className="mt-2 text-fuchsia-100 animate-fade-in-down">
+            <div>+-------------+----------+</div>
+            <div>| skill&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| level&nbsp;&nbsp;&nbsp;&nbsp;|</div>
+            <div>+-------------+----------+</div>
+            <div>| SingleStore | <span className="text-green-400">Expert</span>&nbsp;&nbsp;&nbsp;|</div>
+            <div>| AWS RDS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span className="text-green-400">Advanced</span> |</div>
+            <div>| PostgreSQL&nbsp;&nbsp;| <span className="text-green-400">Advanced</span> |</div>
+            <div>+-------------+----------+</div>
+            <div className="text-slate-400 mt-1">3 rows in set (0.00 sec)</div>
+            <div className="mt-4 text-blue-400">singlestore&gt;</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,7 +128,7 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -66,6 +139,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-400 font-sans selection:bg-fuchsia-500/30 selection:text-fuchsia-200 overflow-x-hidden relative">
       
+      {/* Background Effects */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div 
           className="absolute inset-0 opacity-[0.03]" 
@@ -74,13 +148,16 @@ const App = () => {
             backgroundSize: '24px 24px'
           }}
         />
+        {/* Animated Glow Orbs */}
         <div className="absolute -top-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[100px] animate-pulse-slow" />
         <div className="absolute -bottom-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[100px] animate-pulse-slow delay-1000" />
       </div>
 
+      {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4' : 'bg-transparent py-6'}`}>
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
           
+          {/* Logo & Brand Area */}
           <div 
             className="flex items-center gap-3 cursor-pointer group z-50" 
             onClick={() => scrollToSection('home')}
@@ -94,6 +171,7 @@ const App = () => {
             </div>
           </div>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-sm font-medium">
             {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
               <button
@@ -107,6 +185,7 @@ const App = () => {
             ))}
           </div>
 
+          {/* Mobile Menu Toggle */}
           <button 
             className="md:hidden text-slate-300 hover:text-white z-50"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -115,6 +194,7 @@ const App = () => {
           </button>
         </div>
 
+        {/* Mobile Navigation Overlay */}
         {isMobileMenuOpen && (
           <div className="absolute top-0 left-0 w-full h-screen bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 md:hidden z-40 animate-fade-in-down">
             {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
@@ -132,9 +212,12 @@ const App = () => {
 
       <main className="relative z-10">
         
-        <section id="home" className="min-h-screen flex items-center pt-24 md:pt-20">
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen flex items-center pt-24 md:pt-20 relative">
+          
           <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
             
+            {/* Text Content - Left Column */}
             <div className="space-y-6 order-2 md:order-1">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-green-900/20 border border-green-500/30 text-green-300 text-sm">
                 <span className="relative flex h-2 w-2">
@@ -191,6 +274,7 @@ const App = () => {
                 <a href="mailto:connect2shahidmoosa@gmail.com" className="hover:text-fuchsia-400 transition-colors"><Mail size={24} /></a>
               </div>
 
+              {/* SingleStore Endorsement Section */}
               <div className="mt-8 pt-8 border-t border-slate-800/50 max-w-md">
                  <p className="text-xs text-slate-500 mb-3 font-semibold uppercase tracking-widest flex items-center gap-2">
                    <Zap size={12} className="text-fuchsia-400" />
@@ -223,11 +307,15 @@ const App = () => {
               </div>
             </div>
 
-            <div className="order-1 md:order-2 flex justify-center relative mt-8 md:mt-0">
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 group">
+            {/* Right Column: Image and Terminal (Stacked) */}
+            <div className="order-1 md:order-2 flex flex-col items-center justify-center relative mt-8 md:mt-0">
+              {/* Image Container */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 group mb-8">
+                {/* Decorative rings */}
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-fuchsia-600 to-blue-600 opacity-75 blur transition duration-500 group-hover:opacity-100" />
                 <div className="absolute -inset-4 rounded-full border border-slate-700/50 scale-90 transition duration-700 group-hover:scale-100" />
                 
+                {/* Main Image Container */}
                 <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-slate-950 bg-slate-900 flex items-center justify-center">
                   <img 
                     src="/IMG_1601.jpeg" 
@@ -239,12 +327,16 @@ const App = () => {
                       e.currentTarget.nextSibling.style.display = 'flex';
                     }}
                   />
+                  {/* Fallback if image fails to load */}
                   <div className="hidden absolute inset-0 flex-col items-center justify-center bg-slate-800 text-slate-500 p-4 text-center">
                     <Database size={48} className="mb-2 text-fuchsia-500" />
                     <span className="text-sm">Image not found.<br/>Ensure IMG_1601.jpeg is in the same folder.</span>
                   </div>
                 </div>
               </div>
+
+              {/* Terminal Widget - Placed below image in the grid flow */}
+              <TerminalWidget />
             </div>
           </div>
           
@@ -253,6 +345,7 @@ const App = () => {
           </div>
         </section>
 
+        {/* About Section */}
         <section id="about" className="py-16 md:py-24 bg-slate-950/50">
           <div className="max-w-4xl mx-auto px-6">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-8 flex items-center">
@@ -261,15 +354,16 @@ const App = () => {
             </h2>
             <div className="prose prose-lg prose-invert text-slate-400">
               <p>
-                I am a cloud-first <strong>Cloud Database Support Engineer</strong> with over 5 years of experience in distributed systems and cloud infrastructure. Currently at <strong>SingleStore DB</strong>, I specialize in high-severity incident management, root cause analysis (RCA), and performance tuning for enterprise-grade columnar clusters.
+                I am a dedicated <strong>Cloud Database Support Engineer</strong> with a passion for ensuring data integrity, availability, and performance. My journey began with a curiosity for how massive datasets are stored and retrieved, evolving into a career managing complex cloud environments.
               </p>
               <p>
-                My background includes a tenure at <strong>AWS</strong>, where I resolved complex infrastructure incidents for Amazon Aurora and RDS. I bridge the gap between engineering and support, ensuring data integrity and availability for mission-critical applications.
+                I specialize in diagnosing intricate database issues, optimizing query performance, and architecting resilient cloud solutions on platforms like AWS and Azure. Whether it's a critical production outage or a long-term migration strategy, I bring a calm, analytical approach to problem-solving.
               </p>
             </div>
           </div>
         </section>
 
+        {/* Skills Section */}
         <section id="skills" className="py-16 md:py-24 relative overflow-hidden">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-12 flex items-center md:justify-end">
@@ -278,6 +372,7 @@ const App = () => {
             </h2>
 
             <div className="grid md:grid-cols-3 gap-8">
+              {/* Database Skills */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-fuchsia-500/50 transition-all group">
                 <div className="w-12 h-12 bg-fuchsia-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-fuchsia-600 transition-colors">
                   <Database className="text-fuchsia-400 group-hover:text-white" />
@@ -293,6 +388,7 @@ const App = () => {
                 </ul>
               </div>
 
+              {/* Cloud Skills */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group">
                 <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
                   <Cloud className="text-blue-400 group-hover:text-white" />
@@ -308,6 +404,7 @@ const App = () => {
                 </ul>
               </div>
 
+              {/* Support & Tools */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-green-500/50 transition-all group">
                 <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors">
                   <Terminal className="text-green-400 group-hover:text-white" />
@@ -326,6 +423,7 @@ const App = () => {
           </div>
         </section>
 
+        {/* Certifications Section */}
         <section id="certifications" className="py-24 relative">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-3xl font-bold text-slate-100 mb-12 flex items-center justify-center md:justify-start">
@@ -334,6 +432,7 @@ const App = () => {
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* AWS */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-yellow-500/50 transition-all group hover:-translate-y-1">
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-500/20 transition-colors">
                    <Cloud className="text-yellow-500" />
@@ -346,6 +445,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Azure */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group hover:-translate-y-1">
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
                    <Cloud className="text-blue-500" />
@@ -358,6 +458,7 @@ const App = () => {
                 </div>
               </div>
 
+              {/* Web App Pen Testing */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-red-500/50 transition-all group hover:-translate-y-1">
                  <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-500/20 transition-colors">
                    <Shield className="text-red-500" />
@@ -370,6 +471,7 @@ const App = () => {
                 </div>
               </div>
 
+               {/* Cyber Security */}
               <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 hover:border-green-500/50 transition-all group hover:-translate-y-1">
                  <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
                    <Lock className="text-green-500" />
@@ -386,6 +488,7 @@ const App = () => {
           </div>
         </section>
 
+        {/* Experience Section */}
         <section id="experience" className="py-16 md:py-24 bg-slate-950/50">
           <div className="max-w-4xl mx-auto px-6">
             <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-12 flex items-center">
@@ -395,11 +498,12 @@ const App = () => {
             
             <div className="space-y-12 border-l-2 border-slate-800 ml-3 md:ml-0 pl-8 md:pl-0">
               
+              {/* Job 1 */}
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-fuchsia-500 group-hover:scale-125 transition-transform"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                  <h3 className="text-xl font-bold text-slate-200">Database Cloud Support Engineer</h3>
-                  <span className="text-sm font-mono text-fuchsia-400">Jan 2024 - Present</span>
+                  <h3 className="text-xl font-bold text-slate-200">Senior Cloud Support Engineer</h3>
+                  <span className="text-sm font-mono text-fuchsia-400">2021 - Present</span>
                 </div>
                 <h4 className="text-lg text-slate-400 mb-4 flex items-center gap-2">
                   <img 
@@ -410,49 +514,28 @@ const App = () => {
                   SingleStore DB
                 </h4>
                 <p className="mb-4">
-                  Delivered Tier-2/3 support for distributed columnar clusters. Diagnosed replication, ingest pipeline, node health, and performance issues. Led high-severity incident management aligned with ITIL practices.
+                  Led a team of support engineers resolving critical P0 incidents for enterprise database clusters. Implemented automated health checks using Python, reducing incident detection time by 40%.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {['Distributed Systems', 'SQL', 'Python', 'Incident Management'].map(tag => (
+                  {['AWS', 'PostgreSQL', 'Python'].map(tag => (
                     <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
                   ))}
                 </div>
               </div>
 
+              {/* Job 2 */}
               <div className="relative md:ml-12 group">
                 <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                  <h3 className="text-xl font-bold text-slate-200">Cloud Support Associate</h3>
-                  <span className="text-sm font-mono text-fuchsia-400">July 2022 - Jan 2024</span>
+                  <h3 className="text-xl font-bold text-slate-200">Database Administrator</h3>
+                  <span className="text-sm font-mono text-fuchsia-400">2018 - 2021</span>
                 </div>
-                <h4 className="text-lg text-slate-400 mb-4 flex items-center gap-2">
-                  <div className="p-0.5 bg-white/10 rounded">
-                    <Cloud size={18} className="text-yellow-500" />
-                  </div>
-                  Amazon Web Services (AWS)
-                </h4>
+                <h4 className="text-lg text-slate-400 mb-4">DataFlow Systems</h4>
                 <p className="mb-4">
-                  Troubleshot Aurora PostgreSQL, RDS, and DMS replication events. Investigated latency, backup/restore failures, and cross-region replication issues. Authored internal KBAs for RDS and DR planning.
+                  Managed on-premise Oracle and MySQL databases. Performed major version upgrades, optimized slow queries, and maintained backup/recovery strategies ensuring 99.99% uptime.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {['AWS RDS', 'Aurora', 'DMS', 'PostgreSQL'].map(tag => (
-                    <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative md:ml-12 group">
-                <div className="hidden md:block absolute -left-[55px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-slate-700 group-hover:bg-fuchsia-500 transition-colors"></div>
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                  <h3 className="text-xl font-bold text-slate-200">Senior System Associate</h3>
-                  <span className="text-sm font-mono text-fuchsia-400">Apr 2020 - July 2022</span>
-                </div>
-                <h4 className="text-lg text-slate-400 mb-4">Infosys</h4>
-                <p className="mb-4">
-                  Administered SCCM and Windows infrastructure for 100+ users. Executed operations with strict compliance and SLA standards. Completed training in Linux, PowerShell, and Networking.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {['SCCM', 'Windows Admin', 'Linux', 'PowerShell'].map(tag => (
+                  {['Oracle', 'MySQL', 'Linux'].map(tag => (
                     <span key={tag} className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">{tag}</span>
                   ))}
                 </div>
@@ -482,6 +565,7 @@ const App = () => {
           </div>
         </section>
 
+        {/* Contact Section */}
         <section id="contact" className="py-16 md:py-24">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-6">Let's Connect</h2>
@@ -498,6 +582,7 @@ const App = () => {
           </div>
         </section>
 
+        {/* Footer */}
         <footer className="py-8 border-t border-slate-900 text-center text-slate-600 text-sm">
           <p>© {new Date().getFullYear()} Shahid Moosa. Built with React & Tailwind.</p>
         </footer>
