@@ -275,7 +275,7 @@ Start simple, measure, and scale incrementally.
 
 - [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases) - Foundational concepts for distributed systems
 - [How SingleStore Handles Real-Time Analytics at Scale](/blog/singlestore-real-time-analytics) - Concrete HTAP implementation example
-- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes
+- [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly) - Production failure modes
 
 ---
 

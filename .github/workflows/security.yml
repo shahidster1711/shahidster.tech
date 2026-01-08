@@ -1,0 +1,48 @@
+name: Security Gate
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-check:
+    name: 🛡️ Security Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: 📦 Dependency Vulnerability Scan
+        # Fails if any HIGH or CRITICAL vulnerabilities are found
+        run: npm audit --audit-level=high
+
+      - name: 🔑 Secret Scanning (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏗️ Build Verification
+        run: npm run build
+
+      - name: 🔒 CSP Header Verification
+        # Check if CSP meta tag or header is present in the build output
+        run: |
+          if grep -q "Content-Security-Policy" dist/index.html; then
+            echo "✅ CSP Header found in build artifact."
+          else
+            echo "❌ CSP Header MISSING in build artifact!"
+            exit 1
+          fi

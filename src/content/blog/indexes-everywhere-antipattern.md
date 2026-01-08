@@ -1,7 +1,7 @@
 ---
 title: "Why 'Indexes Everywhere' Destroys Database Performance"
 description: "How reflexive indexing silently destroys write throughput, memory locality, and system stability in HTAP and distributed SQL databases."
-date: "2026-01-08"
+date: "2026-01-09"
 tags: ["Database Performance", "Indexes", "HTAP", "Write Amplification", "SingleStore"]
 author: "Shahid Moosa"
 slug: "indexes-everywhere-antipattern"
@@ -10,8 +10,8 @@ image: "/blog-images/indexes-everywhere-antipattern.png"
 
 # Why "Indexes Everywhere" Destroys Database Performance
 
-> [!NOTE]
-> This post is Part 5 of the **[Distributed SQL Deep Dive](/blog/distributed-sql-series-overview)** series.
+> **Part of the Pillar: Query Shape & Execution Reality.** 
+> For foundational execution concepts, see [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines).
 
 ## Content Summary
 
@@ -188,7 +188,7 @@ In HTAP systems, you're running **two workloads simultaneously**:
 
 ```mermaid
 flowchart LR
-    OLTP[OLTP Writes<br/>50K TPS] --> RS[Rowstore]
+    OLTP[OLTP Writes<br>50K TPS] --> RS[Rowstore]
     OLAP[Analytics Queries] --> CS[Columnstore]
     
     RS -.->|Background Sync| CS
@@ -299,10 +299,10 @@ Every index competes for memory.
 
 ```mermaid
 flowchart TD
-    MEM[Total Memory: 128 GB] --> DATA[Active Data<br/>60 GB]
-    MEM --> IDX[Indexes<br/>40 GB]
-    MEM --> CACHE[Query Working Sets<br/>20 GB]
-    MEM --> OVERHEAD[System Overhead<br/>8 GB]
+    MEM[Total Memory: 128 GB] --> DATA[Active Data<br>60 GB]
+    MEM --> IDX[Indexes<br>40 GB]
+    MEM --> CACHE[Query Working Sets<br>20 GB]
+    MEM --> OVERHEAD[System Overhead<br>8 GB]
     
     DATA -.->|Hot rows accessed| FAST[Fast: In Memory]
     IDX -.->|Frequent index lookups| SLOW1[Cache Misses]
@@ -668,9 +668,9 @@ Audit them. Drop the unused ones. Your write throughput will thank you.
 
 ## Further Reading
 
+- [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines)
+- [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly)
 - [Lessons Learned Running SingleStore in Production](/blog/singlestore-production-lessons)
-- [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine)
-- [How SingleStore Handles Real-Time Analytics at Scale](/blog/singlestore-real-time-analytics)
 - [Debugging Slow Database Queries](/blog/debugging-slow-database-queries)
 
 ---

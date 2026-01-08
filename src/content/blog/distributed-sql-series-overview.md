@@ -24,11 +24,11 @@ The most important question isn't which database is faster—it’s where your p
 ### Part 2: [How SingleStore Handles Real-Time Analytics at Scale](/blog/singlestore-real-time-analytics)
 A deep dive into HTAP architecture. Learn how a system can handle massive write ingestion and complex analytical queries simultaneously without the "fairy dust" of marketing claims.
 
-### Part 3: [Understanding SingleStore's Execution Engine (for Humans)](/blog/singlestore-execution-engine)
+### Part 3: [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines)
 Explain how a distributed SQL execution engine actually works in practice. We break down query planning, data movement (shuffling), and why joins and aggregations sometimes explode in cost.
 
-### Part 4: [Lessons Learned Running SingleStore in Production (The Painful Ones)](/blog/singlestore-production-lessons)
-The "brutally honest" post. I share the failure modes, operational mistakes, and design lessons learned from running distributed HTAP at scale. We talk about memory pressure, sideways failures, and the reality of on-call.
+### Part 4: [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly)
+The "brutally honest" deep dive. We explore why distributed systems don't fail with a bang, but with a sideways drift in latency. Learn to spot memory pressure and silent contention before they become outages.
 
 ### Part 5: [Why 'Indexes Everywhere' Destroys Database Performance](/blog/indexes-everywhere-antipattern)
 A warning about reflexive indexing. Learn how indexing "pitfalls" in distributed systems silently destroy write throughput and memory locality.

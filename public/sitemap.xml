@@ -12,7 +12,7 @@
   </url>
   <url>
     <loc>https://shahidster.tech/blog/debugging-slow-database-queries</loc>
-    <lastmod>2026-01-06</lastmod>
+    <lastmod>2026-01-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -26,13 +26,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://shahidster.tech/blog/htap-failures</loc>
-    <lastmod>2026-01-08</lastmod>
+    <loc>https://shahidster.tech/blog/htap-systems-fail-quietly</loc>
+    <lastmod>2026-01-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://shahidster.tech/blog/indexes-everywhere-antipattern</loc>
-    <lastmod>2026-01-08</lastmod>
+    <lastmod>2026-01-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -41,8 +41,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://shahidster.tech/blog/singlestore-execution-engine</loc>
-    <lastmod>2026-01-08</lastmod>
+    <loc>https://shahidster.tech/blog/distributed-sql-execution-engines</loc>
+    <lastmod>2026-01-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>

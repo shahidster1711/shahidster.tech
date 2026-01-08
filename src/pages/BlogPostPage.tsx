@@ -194,19 +194,28 @@ const BlogPostPage: React.FC = () => {
                         </div>
 
                         {/* Author Bio */}
-                        <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-6 mb-12">
-                            <h3 className="text-lg font-bold text-slate-100 mb-2">About the Author</h3>
-                            <p className="text-slate-400 mb-4">
-                                <strong className="text-slate-300">{post.author}</strong> is a Cloud Database Support Engineer
-                                specializing in distributed systems, AWS, and SingleStore. He helps teams build scalable,
-                                reliable data infrastructure.
-                            </p>
-                            <Link
-                                to="/#contact"
-                                className="text-fuchsia-400 hover:text-fuchsia-300 font-medium text-sm"
-                            >
-                                Get in touch →
-                            </Link>
+                        <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-6 mb-12 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+                            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-fuchsia-500/50 flex-shrink-0 shadow-lg shadow-fuchsia-500/10">
+                                <img
+                                    src="/shahid-moosa.jpg"
+                                    alt={post.author}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-100 mb-2">About the Author</h3>
+                                <p className="text-slate-400 mb-4">
+                                    <strong className="text-slate-300">{post.author}</strong> is a Cloud Database Support Engineer
+                                    specializing in distributed systems, AWS, and SingleStore. He helps teams build scalable,
+                                    reliable data infrastructure.
+                                </p>
+                                <Link
+                                    to="/#contact"
+                                    className="text-fuchsia-400 hover:text-fuchsia-300 font-medium text-sm transition-colors"
+                                >
+                                    Get in touch →
+                                </Link>
+                            </div>
                         </div>
 
                         {/* Social Share Buttons */}

@@ -40,7 +40,7 @@ CREATE TABLE users (
 - Avoid keys that change frequently
 - Consider query patterns when selecting shard keys
 
-> **Deep Dive:** For a detailed look at how distributed SQL query engines handle cross-shard execution and data movement, see [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine).
+> **Deep Dive:** For a detailed look at how distributed SQL query engines handle cross-shard execution and data movement, see [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines).
 
 ### 2. Replication
 
@@ -67,7 +67,7 @@ The **CAP theorem** states you can only guarantee 2 of 3:
 
 Most distributed databases choose **eventual consistency** to maintain availability.
 
-> **Production Reality:** Understanding CAP trade-offs is critical when running HTAP systems at scale. Learn from actual production failures in [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures).
+> **Production Reality:** Understanding CAP trade-offs is critical when running HTAP systems at scale. Learn from actual production failures in [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly).
 
 ## Real-World Example: E-Commerce Platform
 
@@ -178,8 +178,8 @@ Start simple, measure performance, and scale incrementally as your needs grow.
 
 ## Related Resources
 
-- [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine) - Deep dive into distributed query execution
-- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes and lessons learned
+- [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines) - Deep dive into distributed query execution
+- [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly) - Production failure modes and lessons learned
 - [Debugging Slow Database Queries](/blog/debugging-slow-database-queries) - Systematic query optimization approach
 - [Real-Time Analytics: Trade-offs and Best Practices](/blog/realtime-analytics-tradeoffs) - Architectural decisions for analytics systems
 

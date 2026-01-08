@@ -1,14 +1,16 @@
 ---
 title: "Debugging Slow Database Queries: A Systematic Approach"
 description: "Learn how to identify and fix slow database queries using query plans, indexes, and optimization techniques from real production scenarios."
-date: "2026-01-06"
+date: "2026-01-09"
 tags: ["Performance", "SQL", "Debugging", "Optimization"]
 author: "Shahid Moosa"
+slug: "debugging-slow-database-queries"
 ---
 
 # Debugging Slow Database Queries: A Systematic Approach
 
-> **Part of the Distributed Systems Guide**: This post covers systematic query optimization techniques. For architectural foundations, start with [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases).
+> **Part of the Pillar: Distributed Systems Failure Modes.** 
+> This post covers systematic query optimization techniques. For architectural foundations, start with [Why HTAP Systems Fail Quietly](/blog/htap-systems-fail-quietly).
 
 Slow queries are inevitable at scale. Here's my framework for debugging them efficiently, based on years of supporting production databases.
 
@@ -208,9 +210,9 @@ def identify_slow_queries():
 ## Related Resources
 
 - [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases) - Foundational distributed database concepts
-- [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine) - How distributed query execution works
-- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes
+- [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines) - How distributed query execution works
+- [Why HTAP Systems Fail Quietly (And How to Notice Early)](/blog/htap-systems-fail-quietly) - Production failure modes
 
 ---
 
-*Want to dive deeper? Check out my post on [Distributed Database Architecture](/blog/getting-started-distributed-databases).*
+*Want to dive deeper? Check out my post on [Why HTAP Systems Fail Quietly](/blog/htap-systems-fail-quietly).*

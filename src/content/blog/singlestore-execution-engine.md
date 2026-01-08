@@ -1,17 +1,18 @@
 ---
-title: "Understanding SingleStore's Execution Engine (for Humans)"
+title: "How Distributed SQL Execution Engines Really Work"
 description: "How distributed SQL execution actually works—query planning, data movement, joins, aggregations, and why your queries sometimes explode in cost."
-date: "2026-01-08"
-tags: ["SingleStore", "Query Execution", "Distributed Systems", "SQL", "Performance"]
+date: "2026-01-09"
+tags: ["Distributed Systems", "SQL", "Performance", "Databases"]
 author: "Shahid Moosa"
-slug: "singlestore-execution-engine"
+slug: "distributed-sql-execution-engines"
 image: "/blog-images/singlestore-execution-engine.png"
 ---
 
-# Understanding SingleStore's Execution Engine (for Humans)
+# How Distributed SQL Execution Engines Really Work
 
-> [!NOTE]
-> This post is Part 3 of the **[Distributed SQL Deep Dive](/blog/distributed-sql-series-overview)** series.
+> **Pillar Post: Query Shape & Execution Reality.** 
+> This is a deep dive into how data moves across a cluster to satisfy a query. For how these systems fail, see [Why HTAP Systems Fail Quietly](/blog/htap-systems-fail-quietly).
+
 
 Most engineers treat distributed SQL databases as "PostgreSQL, but faster and spread across many nodes." This mental model fails the moment you hit production and discover that a simple JOIN that ran in 100ms on your laptop now takes 30 seconds at scale.
 

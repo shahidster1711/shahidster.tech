@@ -7,8 +7,8 @@ export const PILLAR_PAGE = {
 
 export const CLUSTER_ARTICLES = {
   'distributed-sql-architecture': {
-    slug: '/blog/singlestore-execution-engine',
-    title: 'Distributed SQL Architecture: Sharding & Replication Deep Dive',
+    slug: '/blog/distributed-sql-execution-engines',
+    title: 'How Distributed SQL Execution Engines Really Work',
     primaryKeyword: 'Distributed SQL architecture',
     category: 'Architecture'
   },
@@ -19,8 +19,8 @@ export const CLUSTER_ARTICLES = {
     category: 'Deep Dives'
   },
   'htap-failures': {
-    slug: '/blog/htap-failures',
-    title: 'Running HTAP Systems: What Actually Fails at Scale',
+    slug: '/blog/htap-systems-fail-quietly',
+    title: 'Why HTAP Systems Fail Quietly (And How to Notice Early)',
     primaryKeyword: 'HTAP Failures',
     category: 'Production Incidents'
   },

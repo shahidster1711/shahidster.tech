@@ -1,6 +1,10 @@
 import * as ftp from "basic-ftp"
 import * as path from "path"
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,10 +13,14 @@ async function deploy() {
     const client = new ftp.Client()
     client.ftp.verbose = true
     try {
+        if (!process.env.FTP_HOST || !process.env.FTP_USER || !process.env.FTP_PASSWORD) {
+            throw new Error("Missing FTP credentials in environment variables");
+        }
+
         await client.access({
-            host: "ftp.gb.stackcp.com",
-            user: "prod_deploy@shahidster.tech",
-            password: "17Day11month!",
+            host: process.env.FTP_HOST,
+            user: process.env.FTP_USER,
+            password: process.env.FTP_PASSWORD,
             secure: false
         })
         console.log("Connected to FTP server")
