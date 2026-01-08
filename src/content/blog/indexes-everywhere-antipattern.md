@@ -674,4 +674,3 @@ Audit them. Drop the unused ones. Your write throughput will thank you.
 - [Debugging Slow Database Queries](/blog/debugging-slow-database-queries)
 
 ---
----

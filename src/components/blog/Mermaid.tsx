@@ -10,46 +10,60 @@ interface MermaidProps {
 const Mermaid: React.FC<MermaidProps> = ({ chart, caption, className = '' }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [svg, setSvg] = React.useState<string>('');
-    const [error, setError] = React.useState<string>('');
+    const [error, setError] = React.useState<boolean>(false);
+    const [isClient, setIsClient] = React.useState(false);
 
     useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isClient || !chart || !containerRef.current) return;
+
         const renderChart = async () => {
-            if (!containerRef.current || !chart) return;
-
             try {
-                // Generate unique ID for this chart
-                const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+                // Unique, stable ID for this instance
+                const id = `mermaid-${Math.abs(chart.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0)).toString(36)}`;
 
-                // Render the chart (initialization happens once in App.tsx)
+                // Clear state before re-rendering
+                setError(false);
+
+                // Ensure mermaid is initialized (though usually done in main.tsx)
                 const { svg: renderedSvg } = await mermaid.render(id, chart);
                 setSvg(renderedSvg);
-                setError('');
             } catch (err) {
-                console.error('Mermaid rendering error:', err);
-                setError('Failed to render diagram');
+                console.error('Mermaid rendering failed:', err);
+                setError(true);
             }
         };
 
         renderChart();
-    }, [chart]);
+    }, [chart, isClient]);
+
+    if (!isClient) {
+        return <div className="animate-pulse bg-slate-900/50 h-64 rounded-xl my-12" />;
+    }
 
     if (error) {
         return (
-            <div className="bg-red-900/20 border border-red-800 rounded-lg p-4 my-4">
-                <p className="text-red-400 text-sm">{error}</p>
+            <div className="bg-slate-900/80 border border-red-500/30 rounded-xl p-6 my-12 text-center">
+                <p className="text-red-400 text-sm font-mono mb-2">Diagram Syntax Error</p>
+                <div className="text-xs text-slate-500 overflow-x-auto p-4 bg-slate-950 rounded border border-slate-800 text-left">
+                    <code>{chart}</code>
+                </div>
             </div>
         );
     }
 
     return (
-        <figure className={`my-12 ${className}`}>
+        <figure className={`my-12 flex flex-col items-center ${className}`}>
             <div
                 ref={containerRef}
-                className="mermaid-container flex justify-center overflow-x-auto"
+                className="mermaid-container w-full flex justify-center overflow-x-auto py-4"
                 dangerouslySetInnerHTML={{ __html: svg }}
             />
             {caption && (
-                <figcaption className="mt-4 text-center text-sm text-slate-500 italic max-w-2xl mx-auto italic font-medium border-l-2 border-fuchsia-500/30 pl-4 py-2">
+                <figcaption className="mt-4 text-center text-sm text-slate-500 max-w-2xl mx-auto italic font-medium border-l-2 border-fuchsia-500/30 pl-4 py-2">
                     {caption}
                 </figcaption>
             )}

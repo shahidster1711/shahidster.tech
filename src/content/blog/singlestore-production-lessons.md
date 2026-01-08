@@ -192,11 +192,6 @@ sequenceDiagram
     L3-->>Agg: Join results
     
     Agg-->>App: Final result
-    
-    style Agg fill:#f59e0b,stroke:#d97706,color:#020617
-    style L1 fill:#e879f9,stroke:#d946ef,color:#020617
-    style L2 fill:#e879f9,stroke:#d946ef,color:#020617
-    style L3 fill:#e879f9,stroke:#d946ef,color:#020617
 ```
 
 **Total data movement: 2.8GB**
@@ -635,6 +630,4 @@ And always, always size for memory.
 ---
 
 **Have your own production war stories?** I'd love to hear them. [Email me](mailto:connect2shahidmoosa@gmail.com) or connect on [LinkedIn](https://linkedin.com).
-
----
 

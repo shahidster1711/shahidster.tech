@@ -155,10 +155,6 @@ sequenceDiagram
     Note over A: Merge (5ms)
     
     A-->>C: 250 rows
-    
-    style A fill:#f59e0b,stroke:#d97706,color:#020617
-    style L1 fill:#e879f9,stroke:#d946ef,color:#020617
-    style L2 fill:#e879f9,stroke:#d946ef,color:#020617
 ```
 
 **Total time:** ~60ms  
@@ -694,6 +690,4 @@ It's coordinators dispatching work, workers executing locally, and network movin
 ---
 
 **Have execution engine questions?** [Email me](mailto:connect2shahidmoosa@gmail.com) or connect on [LinkedIn](https://linkedin.com).
-
----
 
