@@ -36,6 +36,9 @@ const SEO: React.FC<SEOProps> = ({
             <meta name="author" content={author} />
             {url && <link rel="canonical" href={url} />}
 
+            {/* Google Search Console Verification */}
+            <meta name="google-site-verification" content="DRjvsmdJF9CYGHNY3r-754oe0Jfz4kcNEOE_QGdb6Jo" />
+
             {/* Open Graph */}
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
