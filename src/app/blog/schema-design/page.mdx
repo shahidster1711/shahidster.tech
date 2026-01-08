@@ -1,0 +1,26 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Schema Design for Distributed SQL | Shahid Moosa',
+  description: 'Anti-patterns to avoid in distributed schema design: hotspots, wide partitions, and bad shard keys.',
+};
+
+<ArticleJsonLd
+  headline="Schema Design for Distributed SQL: Anti-Patterns to Avoid"
+  description="Anti-patterns to avoid in distributed schema design: hotspots, wide partitions, and bad shard keys."
+  datePublished="2024-03-29"
+  slug="/blog/schema-design"
+/>
+
+# Schema Design for Distributed SQL
+
+## The Shard Key Dilemma
+
+Choosing a shard key is the most critical decision.
+* **Monotonically Increasing Keys (e.g., Timestamp):** Bad for inserts (hotspot on the last partition).
+* **High Cardinality Keys (e.g., UUID):** Good for distribution, bad for range queries.
+
+**Golden Rule:** Design for the query pattern, not just the data storage.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

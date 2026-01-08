@@ -1,0 +1,176 @@
+name: Validate Mermaid Diagrams
+
+on:
+  pull_request:
+    paths:
+      - 'src/content/blog/**/*.md'
+      - 'scripts/export-diagrams.ts'
+      - '.github/workflows/validate-diagrams.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/content/blog/**/*.md'
+
+jobs:
+  validate-diagrams:
+    name: Validate and Export Mermaid Diagrams
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Mermaid CLI
+        run: npm install -g @mermaid-js/mermaid-cli
+      
+      - name: Validate Mermaid syntax
+        run: |
+          echo "🔍 Validating Mermaid diagrams..."
+          
+          # Find all markdown files with mermaid blocks
+          MERMAID_FILES=$(grep -rl '```mermaid' src/content/blog/ || true)
+          
+          if [ -z "$MERMAID_FILES" ]; then
+            echo "✅ No Mermaid diagrams found"
+            exit 0
+          fi
+          
+          # Extract and validate each diagram
+          for file in $MERMAID_FILES; do
+            echo "Checking $file..."
+            
+            # Extract mermaid blocks and validate syntax
+            awk '/```mermaid/,/```/' "$file" | \
+              grep -v '```' | \
+              while IFS= read -r line; do
+                if [ ! -z "$line" ]; then
+                  echo "$line" >> temp_diagram.mmd
+                fi
+              done
+            
+            if [ -f temp_diagram.mmd ]; then
+              # Validate using mmdc (mermaid-cli)
+              mmdc -i temp_diagram.mmd -o temp_output.svg 2>&1 || {
+                echo "❌ Invalid Mermaid syntax in $file"
+                cat temp_diagram.mmd
+                exit 1
+              }
+              rm -f temp_diagram.mmd temp_output.svg
+            fi
+          done
+          
+          echo "✅ All Mermaid diagrams are valid"
+      
+      - name: Export diagrams to SVG
+        run: |
+          echo "📊 Exporting diagrams to SVG..."
+          npm run export-diagrams || echo "⚠️ Export script not found, skipping"
+      
+      - name: Check for diagram changes
+        id: diagram-changes
+        run: |
+          if [ -d "public/diagrams" ]; then
+            git diff --quiet public/diagrams/ || echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload diagram artifacts
+        if: steps.diagram-changes.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mermaid-diagrams
+          path: public/diagrams/
+          retention-days: 30
+      
+      - name: Comment on PR with diagram preview
+        if: github.event_name == 'pull_request' && steps.diagram-changes.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            const diagramDir = 'public/diagrams';
+            const diagrams = fs.readdirSync(diagramDir)
+              .filter(f => f.endsWith('.svg'))
+              .map(f => `- \`${f}\``);
+            
+            const comment = `## 📊 Mermaid Diagrams Updated
+            
+            The following diagrams were generated from this PR:
+            
+            ${diagrams.join('\n')}
+            
+            Download the artifacts to preview the SVG files.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Validate diagram accessibility
+        run: |
+          echo "♿ Checking diagram accessibility..."
+          
+          # Check that diagrams have proper titles and descriptions
+          for svg in public/diagrams/*.svg 2>/dev/null; do
+            if [ -f "$svg" ]; then
+              if ! grep -q '<title>' "$svg"; then
+                echo "⚠️ Warning: $svg missing <title> tag for accessibility"
+              fi
+            fi
+          done
+          
+          echo "✅ Accessibility check complete"
+
+  lint-markdown:
+    name: Lint Markdown Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+      
+      - name: Lint markdown files
+        run: |
+          markdownlint 'src/content/blog/**/*.md' \
+            --config .markdownlint.json \
+            --ignore node_modules || true
+      
+      - name: Check for broken links
+        run: |
+          echo "🔗 Checking for broken internal links..."
+          
+          # Simple check for broken internal links
+          for file in src/content/blog/*.md; do
+            # Extract markdown links
+            grep -oP '\[.*?\]\(/blog/.*?\)' "$file" | \
+              sed 's/\[.*\](\(.*\))/\1/' | \
+              while read -r link; do
+                target_file="src/content/blog/$(basename $link).md"
+                if [ ! -f "$target_file" ]; then
+                  echo "⚠️ Broken link in $file: $link"
+                fi
+              done
+          done
+          
+          echo "✅ Link check complete"

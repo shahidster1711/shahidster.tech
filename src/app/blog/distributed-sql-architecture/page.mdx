@@ -1,0 +1,28 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Distributed SQL Architecture: Sharding & Replication | Shahid Moosa',
+  description: 'Deep dive into how distributed SQL databases handle sharding, replication, and query planning across multiple nodes.',
+};
+
+<ArticleJsonLd
+  headline="Distributed SQL Architecture: Sharding & Replication Deep Dive"
+  description="Deep dive into how distributed SQL databases handle sharding, replication, and query planning across multiple nodes."
+  datePublished="2024-03-21"
+  slug="/blog/distributed-sql-architecture"
+/>
+
+# Distributed SQL Architecture
+
+Distributed SQL databases attempt to combine the ACID compliance of RDBMS with the horizontal scaling of NoSQL. This architecture relies heavily on **Aggregator (Coordinator)** and **Leaf (Data)** nodes.
+
+## The Query Lifecycle
+
+1.  **Parsing:** The Aggregator receives the SQL query.
+2.  **Planner:** It determines if the query is a "Reference" query (metadata only) or a "Distributed" query.
+3.  **Shuffle/Broadcast:** If the query involves a JOIN between two tables sharded on different keys, the system must move data across the network (Shuffle) or send the smaller table to all nodes (Broadcast).
+
+**Key Takeaway:** Minimizing network movement during JOINs is the #1 way to optimize distributed SQL.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

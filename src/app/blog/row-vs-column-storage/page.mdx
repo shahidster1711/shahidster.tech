@@ -1,0 +1,27 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Row vs Column Storage: Analytics Trade-offs | Shahid Moosa',
+  description: 'When to use Rowstore vs Columnstore in hybrid transactional/analytical processing (HTAP) systems.',
+};
+
+<ArticleJsonLd
+  headline="Row vs Column Storage: Making the Right Trade-off"
+  description="When to use Rowstore vs Columnstore in hybrid transactional/analytical processing (HTAP) systems."
+  datePublished="2024-03-23"
+  slug="/blog/row-vs-column-storage"
+/>
+
+# Row vs Column Storage
+
+Hybrid databases often support both.
+
+* **Rowstore:** Optimized for point lookups (`SELECT * FROM users WHERE id = 1`) and transactional writes. Data is stored sequentially on disk.
+* **Columnstore:** Optimized for aggregations (`SELECT AVG(salary) FROM employees`). Data is compressed by column type.
+
+## The Segment Elimination Benefit
+
+Columnstores excel because they use metadata (min/max values) to skip entire segments of data during scans. This is crucial for **Real-Time Analytics**.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

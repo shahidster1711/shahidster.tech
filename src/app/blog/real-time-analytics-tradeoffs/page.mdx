@@ -1,0 +1,26 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Real-Time Analytics: Consistency vs Latency | Shahid Moosa',
+  description: 'Balancing the need for fresh data with the cost of strong consistency in ingestion pipelines.',
+};
+
+<ArticleJsonLd
+  headline="Real-Time Analytics: Consistency vs. Latency Trade-offs"
+  description="Balancing the need for fresh data with the cost of strong consistency in ingestion pipelines."
+  datePublished="2024-03-24"
+  slug="/blog/real-time-analytics-tradeoffs"
+/>
+
+# Real-Time Analytics Trade-offs
+
+Real-time usually means "freshness within seconds."
+
+## The Ingestion Bottleneck
+
+Transactional consistency (ACID) on ingestion slows down throughput.
+* **Trade-off:** Use "READ COMMITTED" or looser isolation levels for analytical queries to prevent readers from blocking writers.
+* **Micro-batching:** Instead of row-by-row inserts, buffer data and insert in batches to reduce transaction overhead.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

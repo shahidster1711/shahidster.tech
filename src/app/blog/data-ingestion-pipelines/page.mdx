@@ -1,0 +1,26 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Building Resilient Data Ingestion Pipelines | Shahid Moosa',
+  description: 'Architecture patterns for Kafka to Database ingestion pipelines handling high throughput.',
+};
+
+<ArticleJsonLd
+  headline="Building Resilient Data Ingestion Pipelines at Scale"
+  description="Architecture patterns for Kafka to Database ingestion pipelines handling high throughput."
+  datePublished="2024-03-25"
+  slug="/blog/data-ingestion-pipelines"
+/>
+
+# Data Ingestion Pipelines
+
+A database is only as good as the data flowing into it.
+
+## Exactly-Once Semantics
+
+Achieving exactly-once delivery from Kafka to a DB is hard.
+* **Idempotency:** Ensure your DB table has a primary key based on the event ID. `INSERT IGNORE` or `ON DUPLICATE KEY UPDATE` handles duplicates automatically.
+* **Backpressure:** If the DB slows down, the pipeline must throttle reading from Kafka to prevent memory overflows.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

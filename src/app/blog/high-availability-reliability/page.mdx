@@ -1,0 +1,25 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'High Availability Patterns for Cloud Databases | Shahid Moosa',
+  description: 'Designing for AZ failures, region failovers, and zero-downtime maintenance.',
+};
+
+<ArticleJsonLd
+  headline="High Availability Patterns for Cloud Databases"
+  description="Designing for AZ failures, region failovers, and zero-downtime maintenance."
+  datePublished="2024-03-26"
+  slug="/blog/high-availability-reliability"
+/>
+
+# High Availability Patterns
+
+HA is expensive. You are paying for redundancy you hope to never use.
+
+## Multi-AZ Deployments
+
+In AWS, splitting nodes across Availability Zones (AZs) protects against data center failure but increases write latency due to synchronous replication.
+* **Tip:** Keep app servers in the same AZ as the primary DB writer to minimize latency, but ensure the standby is in a different AZ.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

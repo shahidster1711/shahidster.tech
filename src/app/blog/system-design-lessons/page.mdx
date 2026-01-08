@@ -1,0 +1,24 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'System Design Lessons: Petabyte Scale | Shahid Moosa',
+  description: 'Lessons learned from managing massive data sets: observability, cost management, and lifecycle policies.',
+};
+
+<ArticleJsonLd
+  headline="System Design Lessons from Managing Petabyte-Scale Data"
+  description="Lessons learned from managing massive data sets: observability, cost management, and lifecycle policies."
+  datePublished="2024-03-30"
+  slug="/blog/system-design-lessons"
+/>
+
+# System Design Lessons
+
+At petabyte scale, small inefficiencies become expensive bills.
+
+1.  **Observability:** If you can't measure it, you can't optimize it. Metrics must include P95 and P99 latency, not just averages.
+2.  **Lifecycle Policies:** Data has gravity. Move cold data to cheaper storage (S3) aggressively using Tiered Storage features.
+3.  **Capacity Planning:** Auto-scaling databases is slower than you think. Pre-scale for known events.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

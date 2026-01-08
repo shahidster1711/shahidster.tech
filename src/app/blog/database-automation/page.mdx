@@ -1,0 +1,26 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Database Automation: Terraform & Ansible | Shahid Moosa',
+  description: 'Managing database infrastructure as code. Avoiding drift and ensuring reproducible environments.',
+};
+
+<ArticleJsonLd
+  headline="Database Automation: Terraform & Ansible in Production"
+  description="Managing database infrastructure as code. Avoiding drift and ensuring reproducible environments."
+  datePublished="2024-03-27"
+  slug="/blog/database-automation"
+/>
+
+# Database Automation
+
+Databases are stateful, making them harder to manage with Terraform than stateless web servers.
+
+## The Separation of Concerns
+
+* **Terraform:** Provision the infrastructure (EC2, EBS, Security Groups).
+* **Ansible:** Configure the OS and Database Software (users, conf files).
+* **State Management:** Never store secrets in your `tfstate`. Use AWS Secrets Manager.
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

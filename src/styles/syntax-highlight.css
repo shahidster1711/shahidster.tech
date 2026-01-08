@@ -1,0 +1,117 @@
+/* Custom syntax highlighting theme matching portfolio colors */
+/* Based on One Dark Pro with fuchsia/slate accents */
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1.5rem;
+  background: #0f172a; /* slate-900 */
+  color: #cbd5e1; /* slate-300 */
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b; /* slate-800 */
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #64748b; /* slate-500 */
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #e879f9; /* fuchsia-400 */
+  font-weight: 500;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #fb923c; /* orange-400 */
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #86efac; /* green-300 */
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #60a5fa; /* blue-400 */
+  font-weight: 600;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #fbbf24; /* amber-400 */
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #c084fc; /* purple-400 */
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #22d3ee; /* cyan-400 */
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #f472b6; /* pink-400 */
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #a78bfa; /* violet-400 */
+}
+
+.hljs-meta {
+  color: #94a3b8; /* slate-400 */
+}
+
+.hljs-deletion {
+  background: rgba(239, 68, 68, 0.1); /* red-500 with opacity */
+  color: #fca5a5; /* red-300 */
+}
+
+.hljs-addition {
+  background: rgba(34, 197, 94, 0.1); /* green-500 with opacity */
+  color: #86efac; /* green-300 */
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* Inline code */
+code:not(.hljs) {
+  background: #1e293b; /* slate-800 */
+  color: #e879f9; /* fuchsia-400 */
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.875em;
+  font-family: 'Fira Code', monospace;
+  font-weight: 500;
+}
+
+/* Line numbers (if needed in future) */
+.hljs-ln-numbers {
+  color: #475569; /* slate-600 */
+  text-align: right;
+  padding-right: 1rem;
+  user-select: none;
+}
+
+.hljs-ln-code {
+  padding-left: 1rem;
+}
