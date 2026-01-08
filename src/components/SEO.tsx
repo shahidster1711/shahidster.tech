@@ -1,4 +1,9 @@
-import React, { useEffect } from 'react';
+import { Head } from 'vite-react-ssg';
+
+/**
+ * Enhanced SEO Component for SSG
+ * Uses vite-react-ssg's Head component for direct SSR injection.
+ */
 
 interface SEOProps {
     title: string;
@@ -9,6 +14,7 @@ interface SEOProps {
     publishedTime?: string;
     tags?: string[];
     type?: 'website' | 'article';
+    jsonLd?: any;
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -20,81 +26,50 @@ const SEO: React.FC<SEOProps> = ({
     publishedTime,
     tags,
     type = 'website',
+    jsonLd,
 }) => {
-    useEffect(() => {
-        // Set document title
-        document.title = title;
+    return (
+        <Head>
+            {/* Standard metadata */}
+            <title>{title}</title>
+            <meta name="description" content={description} />
+            <meta name="author" content={author} />
+            {url && <link rel="canonical" href={url} />}
 
-        // Set or update meta tags
-        const setMetaTag = (name: string, content: string, property = false) => {
-            const attribute = property ? 'property' : 'name';
-            let element = document.querySelector(`meta[${attribute}="${name}"]`);
+            {/* Open Graph */}
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:type" content={type} />
+            {url && <meta property="og:url" content={url} />}
+            {image && <meta property="og:image" content={image} />}
+            <meta property="og:site_name" content="shahidster.tech" />
 
-            if (!element) {
-                element = document.createElement('meta');
-                element.setAttribute(attribute, name);
-                document.head.appendChild(element);
-            }
+            {/* Twitter */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={description} />
+            {image && <meta name="twitter:image" content={image} />}
+            <meta name="twitter:creator" content="@shahidmoosa" />
 
-            element.setAttribute('content', content);
-        };
+            {/* Article specific */}
+            {type === 'article' && publishedTime && (
+                <meta property="article:published_time" content={publishedTime} />
+            )}
+            {type === 'article' && tags && tags.map(tag => (
+                <meta key={tag} property="article:tag" content={tag} />
+            ))}
+            {type === 'article' && author && (
+                <meta property="article:author" content={author} />
+            )}
 
-        // Basic meta tags
-        setMetaTag('description', description);
-        setMetaTag('author', author);
-
-        // Open Graph tags
-        setMetaTag('og:title', title, true);
-        setMetaTag('og:description', description, true);
-        setMetaTag('og:type', type, true);
-
-        if (url) {
-            setMetaTag('og:url', url, true);
-        }
-
-        if (image) {
-            setMetaTag('og:image', image, true);
-        }
-
-        // Twitter Card tags
-        setMetaTag('twitter:card', 'summary_large_image');
-        setMetaTag('twitter:title', title);
-        setMetaTag('twitter:description', description);
-
-        if (image) {
-            setMetaTag('twitter:image', image);
-        }
-
-        // Article-specific tags
-        // CRITICAL FIX: Remove old article:tag elements before adding new ones
-        const oldTagElements = document.querySelectorAll('meta[property="article:tag"]');
-        oldTagElements.forEach(el => el.remove());
-
-        if (type === 'article') {
-            if (publishedTime) {
-                setMetaTag('article:published_time', publishedTime, true);
-            }
-
-            if (tags && tags.length > 0) {
-                tags.forEach((tag) => {
-                    const tagElement = document.createElement('meta');
-                    tagElement.setAttribute('property', 'article:tag');
-                    tagElement.setAttribute('content', tag);
-                    document.head.appendChild(tagElement);
-                });
-            }
-
-            setMetaTag('article:author', author, true);
-        }
-
-        // Cleanup function to remove article tags on unmount
-        return () => {
-            const articleTags = document.querySelectorAll('meta[property="article:tag"]');
-            articleTags.forEach(el => el.remove());
-        };
-    }, [title, description, url, image, author, publishedTime, tags, type]);
-
-    return null;
+            {/* Structured Data */}
+            {jsonLd && (
+                <script type="application/ld+json">
+                    {JSON.stringify(jsonLd)}
+                </script>
+            )}
+        </Head>
+    );
 };
 
 export default SEO;

@@ -9,6 +9,7 @@ import { getBlogPostBySlug, getAllBlogPosts } from '../lib/blog-posts';
 import { getRelatedPosts } from '../lib/blog-utils';
 import { generateBlogPostSEO } from '../lib/seo-utils';
 import { formatDate, extractHeadings } from '../lib/markdown';
+import { PILLAR_PAGE, CLUSTER_ARTICLES } from '../lib/blog-graph';
 
 const BlogPostPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -58,12 +59,7 @@ const BlogPostPage: React.FC = () => {
                 publishedTime={seoMetadata.article?.publishedTime}
                 tags={seoMetadata.article?.tags || post.tags}
                 type={seoMetadata.openGraph.type as 'website' | 'article'}
-            />
-
-            {/* Structured Data for SEO */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(seoMetadata.jsonLd) }}
+                jsonLd={seoMetadata.jsonLd}
             />
 
             <div className="max-w-7xl mx-auto px-6 py-12">
@@ -83,6 +79,48 @@ const BlogPostPage: React.FC = () => {
 
                         {/* Header */}
                         <header className="mb-8">
+                            {/* Pillar/Cluster Series Callout */}
+                            {(() => {
+                                const currentPath = `/blog/${post.slug}`;
+                                const isPillar = currentPath === PILLAR_PAGE.slug;
+                                const clusterEntry = Object.values(CLUSTER_ARTICLES).find(a => a.slug === currentPath);
+
+                                if (clusterEntry) {
+                                    return (
+                                        <div className="mb-6 p-4 bg-fuchsia-900/10 border-l-4 border-fuchsia-500 rounded-r-lg">
+                                            <p className="text-sm text-fuchsia-300 font-medium mb-1">Engineering Series</p>
+                                            <p className="text-slate-200">
+                                                This post is part of the <Link to={PILLAR_PAGE.slug} className="text-fuchsia-400 hover:underline font-bold">{PILLAR_PAGE.title}</Link> series.
+                                            </p>
+                                        </div>
+                                    );
+                                }
+
+                                if (isPillar) {
+                                    return (
+                                        <div className="mb-8 p-6 bg-slate-900/50 border border-slate-800 rounded-2xl">
+                                            <h3 className="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
+                                                <div className="w-2 h-6 bg-fuchsia-500 rounded-full"></div>
+                                                Series Curriculum
+                                            </h3>
+                                            <div className="grid gap-3">
+                                                {Object.values(CLUSTER_ARTICLES).map((article, idx) => (
+                                                    <Link
+                                                        key={article.slug}
+                                                        to={article.slug}
+                                                        className="group flex items-center gap-4 p-3 hover:bg-slate-800/50 rounded-xl transition-all border border-transparent hover:border-slate-700"
+                                                    >
+                                                        <span className="text-fuchsia-500 font-mono text-sm font-bold">0{idx + 1}</span>
+                                                        <span className="text-slate-300 group-hover:text-fuchsia-300 transition-colors font-medium">{article.title}</span>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
+
                             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100 mb-6 leading-tight">
                                 {post.title}
                             </h1>

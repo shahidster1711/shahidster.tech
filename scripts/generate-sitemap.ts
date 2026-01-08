@@ -13,20 +13,20 @@ const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
 
 // Extract frontmatter date and slug from markdown files
 const blogPosts = files.map(file => {
-    const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
-    const frontmatterMatch = content.match(/^---\n([\s\S]+?)\n---/);
+  const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
+  const frontmatterMatch = content.match(/^---\n([\s\S]+?)\n---/);
 
-    if (!frontmatterMatch) return null;
+  if (!frontmatterMatch) return null;
 
-    const frontmatter = frontmatterMatch[1];
-    const dateMatch = frontmatter.match(/date:\s*["']?(\d{4}-\d{2}-\d{2})["']?/);
-    const slugMatch = frontmatter.match(/slug:\s*["']?([^"'\n]+)["']?/);
+  const frontmatter = frontmatterMatch[1];
+  const dateMatch = frontmatter.match(/date:\s*["']?(\d{4}-\d{2}-\d{2})["']?/);
+  const slugMatch = frontmatter.match(/slug:\s*["']?([^"'\n]+)["']?/);
 
-    const slug = slugMatch ? slugMatch[1] : file.replace('.md', '');
-    const date = dateMatch ? dateMatch[1] : new Date().toISOString().split('T')[0];
+  const slug = slugMatch ? slugMatch[1] : file.replace('.md', '');
+  const date = dateMatch ? dateMatch[1] : new Date().toISOString().split('T')[0];
 
-    return { slug, date };
-}).filter(Boolean);
+  return { slug, date };
+}).filter((post): post is { slug: string; date: string } => Boolean(post));
 
 // Generate sitemap XML
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

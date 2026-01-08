@@ -56,19 +56,21 @@ async function exportDiagramToSVG(diagram: DiagramExport): Promise<void> {
         // Export to SVG using mermaid-cli
         await run(
             tempMmdPath,
-            diagram.outputPath,
+            diagram.outputPath as `${string}.svg`,
             {
                 parseMMDOptions: {
-                    backgroundColor: '#020617', // slate-950
-                    theme: 'dark',
-                    themeVariables: {
-                        primaryColor: '#e879f9',
-                        primaryTextColor: '#f1f5f9',
-                        primaryBorderColor: '#1e293b',
-                        lineColor: '#64748b',
-                        secondaryColor: '#0f172a',
-                        tertiaryColor: '#020617',
+                    mermaidConfig: {
+                        theme: 'dark',
+                        themeVariables: {
+                            primaryColor: '#e879f9',
+                            primaryTextColor: '#f1f5f9',
+                            primaryBorderColor: '#1e293b',
+                            lineColor: '#64748b',
+                            secondaryColor: '#0f172a',
+                            tertiaryColor: '#020617',
+                        },
                     },
+                    backgroundColor: '#020617', // slate-950
                 },
             }
         );

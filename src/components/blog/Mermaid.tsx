@@ -3,10 +3,11 @@ import mermaid from 'mermaid';
 
 interface MermaidProps {
     chart: string;
+    caption?: string;
     className?: string;
 }
 
-const Mermaid: React.FC<MermaidProps> = ({ chart, className = '' }) => {
+const Mermaid: React.FC<MermaidProps> = ({ chart, caption, className = '' }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [svg, setSvg] = React.useState<string>('');
     const [error, setError] = React.useState<string>('');
@@ -41,11 +42,18 @@ const Mermaid: React.FC<MermaidProps> = ({ chart, className = '' }) => {
     }
 
     return (
-        <div
-            ref={containerRef}
-            className={`mermaid-container my-8 flex justify-center ${className}`}
-            dangerouslySetInnerHTML={{ __html: svg }}
-        />
+        <figure className={`my-12 ${className}`}>
+            <div
+                ref={containerRef}
+                className="mermaid-container flex justify-center overflow-x-auto"
+                dangerouslySetInnerHTML={{ __html: svg }}
+            />
+            {caption && (
+                <figcaption className="mt-4 text-center text-sm text-slate-500 italic max-w-2xl mx-auto italic font-medium border-l-2 border-fuchsia-500/30 pl-4 py-2">
+                    {caption}
+                </figcaption>
+            )}
+        </figure>
     );
 };
 

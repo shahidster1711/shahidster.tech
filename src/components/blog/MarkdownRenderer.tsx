@@ -25,7 +25,13 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
                         // If it's a mermaid code block, render with Mermaid component
                         if (!inline && language === 'mermaid') {
-                            return <Mermaid chart={String(children).replace(/\n$/, '')} />;
+                            const content = String(children);
+                            const lines = content.split('\n');
+                            const captionLine = lines.find(line => line.trim().startsWith('%% caption:'));
+                            const caption = captionLine ? captionLine.replace('%% caption:', '').trim() : undefined;
+                            const chart = lines.filter(line => !line.trim().startsWith('%% caption:')).join('\n').replace(/\n$/, '');
+
+                            return <Mermaid chart={chart} caption={caption} />;
                         }
 
                         // Otherwise, use default code rendering

@@ -37,6 +37,7 @@ In PostgreSQL, there's one process executing your query.
 In a distributed system like SingleStore, your query runs across **two layers**:
 
 ```mermaid
+%% caption: Distributed SQL Execution Architecture illustrating Aggregators dispatching subqueries to Leaves and merging partial results.
 flowchart TB
     CLIENT[Client Application]
     
@@ -130,6 +131,7 @@ The real work:
 **Network traffic:** Gigabytes (potentially)
 
 ```mermaid
+%% caption: Typical Query Lifecycle highlighting the millisecond-scale planning vs potentially second-scale execution involving local leaf scans and remote results merging.
 sequenceDiagram
     participant C as Client
     participant A as Aggregator
@@ -243,6 +245,7 @@ JOIN user_activity a ON o.user_id = a.user_id;
 ```
 
 ```mermaid
+%% caption: Co-Located Join (Fast): When tables are sharded on the same key, leaves can perform joins locally without any data moving across the network.
 flowchart LR
     A[Aggregator] -->|Dispatch| L1[Leaf 1]
     A -->|Dispatch| L2[Leaf 2]
@@ -285,6 +288,7 @@ JOIN products p ON o.product_id = p.product_id;
 ```
 
 ```mermaid
+%% caption: Reshuffle Join (Slow): When join keys don't match shard keys, data must be re-partitioned across the network, creating a massive performance bottleneck.
 flowchart TB
     A[Aggregator] -->|Dispatch| L1[Leaf 1]
     A -->|Dispatch| L2[Leaf 2]
@@ -354,6 +358,7 @@ GROUP BY user_id;
 ```
 
 ```mermaid
+%% caption: Aggregation Fan-In: Partial aggregates are computed locally on leaves and then merged on the aggregator for final results, distributing the computational load.
 flowchart TB
     A[Aggregator]
     
@@ -460,6 +465,7 @@ The query planner chooses different strategies based on:
 This is the execution model you need in your head:
 
 ```mermaid
+%% caption: Full Execution Flow: A comprehensive view of query planning, dispatching, local scans, optional reshuffling, and final results merging.
 flowchart TD
     Q[Query] --> AGG[Aggregator]
     
@@ -550,6 +556,7 @@ flowchart TD
 The execution engine has **shared resources**:
 
 ```mermaid
+%% caption: Sideways Failure Pattern: How a single resource-intensive query can saturate network and CPU, starving normal queries and impacting the entire cluster.
 flowchart LR
     Q1[Expensive Query] -->|Consumes| NET[Network Bandwidth]
     Q1 -->|Consumes| MEM[Memory]
@@ -1221,7 +1228,7 @@ jobs:
       - name: Cleanup
         if: always()
         run: rm -rf .mermaid-validation
-
+  
   check-diagram-quality:
     name: Check Diagram Quality
     runs-on: ubuntu-latest
@@ -1308,8 +1315,8 @@ project/
 │       ├── aggregation-fan-in.svg
 │       ├── sideways-failure-execution.svg
 │       └── manifest.json
-└── scripts/
-    └── export-diagrams.ts
+│── scripts/
+│   └── export-diagrams.ts
 ```
 
 ## NPM Scripts
