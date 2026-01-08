@@ -9,13 +9,14 @@ import { PILLAR_PAGE, CLUSTER_ARTICLES } from '../lib/blog-graph';
 const Logo = () => (
     <svg viewBox="0 0 100 100" className="w-full h-full text-slate-100" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Abstract Geometric 'S' - Senior Engineer Style */}
-        <rect x="20" y="20" width="60" height="15" fill="currentColor" />
-        <rect x="20" y="35" width="15" height="15" fill="currentColor" />
-        <rect x="20" y="50" width="60" height="15" fill="currentColor" />
-        <rect x="65" y="65" width="15" height="15" fill="currentColor" />
-        <rect x="20" y="80" width="60" height="15" fill="currentColor" />
+        <rect x="25" y="20" width="50" height="12" fill="currentColor" />
+        <rect x="25" y="32" width="12" height="12" fill="currentColor" />
+        <rect x="25" y="44" width="50" height="12" fill="currentColor" />
+        <rect x="63" y="56" width="12" height="12" fill="currentColor" />
+        <rect x="25" y="68" width="50" height="12" fill="currentColor" />
     </svg>
 );
+
 
 
 const AudioPlayer = () => {
@@ -214,7 +215,7 @@ const HomePage = () => {
                             </h2>
                             <div className="flex items-center gap-2 text-xl text-slate-400">
                                 <span className="text-slate-500">@</span>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Singlestore_logo.png" alt="SingleStore Logo" className="w-6 h-6 rounded-full grayscale hover:grayscale-0 transition-all opacity-80" />
+                                <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" alt="SingleStore Logo" className="w-6 h-6 rounded-full grayscale hover:grayscale-0 transition-all opacity-80" />
                                 <span className="font-semibold text-slate-200">SingleStore DB</span>
                             </div>
                         </div>
@@ -250,7 +251,7 @@ const HomePage = () => {
                             </div>
                             <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl inline-flex items-center gap-4 max-w-sm">
                                 <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center p-1.5">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Singlestore_logo.png" alt="S2" className="w-full h-full object-contain" />
+                                    <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" alt="S2" className="w-full h-full object-contain" />
                                 </div>
                                 <div>
                                     <div className="text-sm font-bold text-slate-200">SingleStore DB</div>
@@ -428,7 +429,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">Jan 2024 - Present</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Singlestore_logo.png" className="w-5 h-5 rounded-full grayscale opacity-70" alt="logo" />
+                                <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" className="w-5 h-5 rounded-full grayscale opacity-70" alt="logo" />
                                 <span className="text-slate-300 font-medium">SingleStore DB</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
@@ -449,8 +450,8 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">July 2022 - Jan 2024</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="w-5 h-5 object-contain grayscale opacity-70" />
-                                <span className="text-slate-300 font-medium">Amazon Web Services (AWS)</span>
+                                <Cloud size={18} className="text-blue-500" />
+                                <span className="text-slate-300 font-medium font-mono text-xs tracking-wider">Amazon Web Services (AWS)</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
                                 Delivered technical support for Amazon Aurora, RDS, and AWS DMS. Specialized in AWS services (EC2, IAM, VPC, S3). Authored knowledge-base articles on IAM configuration and database optimization.
@@ -470,7 +471,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">Apr 2020 - July 2022</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" alt="Infosys" className="w-10 h-4 object-contain grayscale opacity-70" />
+                                <Terminal size={18} className="text-blue-400" />
                                 <span className="text-slate-300 font-medium ml-1">Infosys</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">

@@ -1,9 +1,9 @@
 <svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="30" width="40" height="10" fill="#f8fafc" />
-  <rect x="10" y="40" width="10" height="10" fill="#f8fafc" />
-  <rect x="10" y="50" width="40" height="10" fill="#f8fafc" />
-  <rect x="40" y="60" width="10" height="10" fill="#f8fafc" />
-  <rect x="10" y="70" width="40" height="10" fill="#f8fafc" />
+  <rect x="20" y="30" width="40" height="8" fill="#f8fafc" />
+  <rect x="20" y="38" width="8" height="8" fill="#f8fafc" />
+  <rect x="20" y="46" width="40" height="8" fill="#f8fafc" />
+  <rect x="52" y="54" width="8" height="8" fill="#f8fafc" />
+  <rect x="20" y="62" width="40" height="8" fill="#f8fafc" />
   
-  <text x="70" y="65" fill="#f8fafc" style="font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: bold;">shahidster_</text>
+  <text x="80" y="62" fill="#f8fafc" style="font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: bold;">shahidster_</text>
 </svg>
