@@ -450,7 +450,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">July 2022 - Jan 2024</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <Cloud size={18} className="text-blue-500" />
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 grayscale invert opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                                 <span className="text-slate-300 font-medium font-mono text-xs tracking-wider">Amazon Web Services (AWS)</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
@@ -471,8 +471,8 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">Apr 2020 - July 2022</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <Terminal size={18} className="text-blue-400" />
-                                <span className="text-slate-300 font-medium ml-1">Infosys</span>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" alt="Infosys" className="h-4 grayscale invert opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                                <span className="text-slate-300 font-medium md:ml-1">Infosys</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
                                 Administered SCCM and Windows systems for 100+ users, achieving 99% uptime. Managed Medical Coding operations and document control processes under EDF standards.

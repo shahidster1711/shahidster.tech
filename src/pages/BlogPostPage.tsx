@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { Calendar, Clock, Tag as TagIcon, Share2 } from 'lucide-react';
+import { Calendar, Clock, Tag as TagIcon, Share2, Linkedin } from 'lucide-react';
 import BlogLayout from '../components/blog/BlogLayout';
 import MarkdownRenderer from '../components/blog/MarkdownRenderer';
 import TableOfContents from '../components/blog/TableOfContents';
@@ -24,6 +24,20 @@ const BlogPostPage: React.FC = () => {
     const relatedPosts = getRelatedPosts(post, allPosts, 3);
     const headings = extractHeadings(post.content);
     const seoMetadata = generateBlogPostSEO(post, 'https://shahidster.tech');
+
+    const [scrollProgress, setScrollProgress] = React.useState(0);
+
+    // Scroll progress tracker
+    useEffect(() => {
+        const handleScroll = () => {
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalHeight) * 100;
+            setScrollProgress(progress);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // Scroll to top on mount
     useEffect(() => {
@@ -50,6 +64,14 @@ const BlogPostPage: React.FC = () => {
 
     return (
         <BlogLayout>
+            {/* Reading Progress Bar */}
+            <div
+                className="fixed top-0 left-0 w-full h-1 z-[60] bg-transparent"
+                style={{
+                    background: `linear-gradient(to right, #d946ef ${scrollProgress}%, transparent 0)`
+                }}
+            />
+
             <SEO
                 title={seoMetadata.title}
                 description={seoMetadata.description}
@@ -187,6 +209,34 @@ const BlogPostPage: React.FC = () => {
                             </Link>
                         </div>
 
+                        {/* Social Share Buttons */}
+                        <div className="flex flex-col items-center justify-center py-12 border-t border-slate-800 mb-12">
+                            <h3 className="text-slate-100 font-bold mb-6">Share this briefing</h3>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                                    className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-fuchsia-400 hover:border-fuchsia-400/50 transition-all group"
+                                    aria-label="Share on X"
+                                >
+                                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                                </button>
+                                <button
+                                    onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                                    className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-fuchsia-400 hover:border-fuchsia-400/50 transition-all group"
+                                    aria-label="Share on LinkedIn"
+                                >
+                                    <Linkedin size={20} />
+                                </button>
+                                <button
+                                    onClick={handleShare}
+                                    className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-fuchsia-400 hover:border-fuchsia-400/50 transition-all group"
+                                    aria-label="Copy link"
+                                >
+                                    <Share2 size={20} />
+                                </button>
+                            </div>
+                        </div>
+
                         {/* Related Posts */}
                         {relatedPosts.length > 0 && (
                             <div>
@@ -211,8 +261,57 @@ const BlogPostPage: React.FC = () => {
                         )}
                     </article>
 
-                    {/* Sidebar - Table of Contents */}
-                    {headings.length > 0 && <TableOfContents headings={headings} />}
+                    {/* Sidebar Area */}
+                    <aside className="hidden lg:flex flex-col gap-8 sticky top-24 self-start">
+                        {/* Series Sidebar if post belongs to one */}
+                        {(() => {
+                            const currentPath = `/blog/${post.slug}`;
+                            const clusterEntry = Object.values(CLUSTER_ARTICLES).find(a => a.slug === currentPath);
+                            const isPillar = currentPath === PILLAR_PAGE.slug;
+
+                            if (clusterEntry || isPillar) {
+                                return (
+                                    <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-6">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-4 bg-fuchsia-500 rounded-full"></div>
+                                            <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
+                                                Series Curriculum
+                                            </h3>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {/* Show Pillar if we're on a cluster, or just current if we are pillar */}
+                                            <Link
+                                                to={PILLAR_PAGE.slug}
+                                                className={`block p-2 text-xs rounded transition-colors ${currentPath === PILLAR_PAGE.slug
+                                                    ? 'bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30'
+                                                    : 'text-slate-400 hover:text-fuchsia-300'
+                                                    }`}
+                                            >
+                                                Part 0: {PILLAR_PAGE.title}
+                                            </Link>
+
+                                            {Object.values(CLUSTER_ARTICLES).map((article, idx) => (
+                                                <Link
+                                                    key={article.slug}
+                                                    to={article.slug}
+                                                    className={`block p-2 text-xs rounded transition-colors ${currentPath === article.slug
+                                                        ? 'bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30'
+                                                        : 'text-slate-400 hover:text-fuchsia-300 border border-transparent'
+                                                        }`}
+                                                >
+                                                    Part {idx + 1}: {article.title}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })()}
+
+                        {/* Table of Contents */}
+                        {headings.length > 0 && <TableOfContents headings={headings} />}
+                    </aside>
                 </div>
             </div>
         </BlogLayout>
