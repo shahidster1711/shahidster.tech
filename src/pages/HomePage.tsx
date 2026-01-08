@@ -116,7 +116,7 @@ const HomePage = () => {
 
     const scrollToSection = (id: string, category?: string) => {
         if (category) {
-            setSelectedCategory(category);
+            setSelectedCategory(prev => prev === category ? 'All' : category);
         }
         const element = document.getElementById(id);
         if (element) {
@@ -519,7 +519,7 @@ const HomePage = () => {
                             {['Deep Dives', 'Technical Briefs', 'Production Incidents', 'Architecture'].map(cat => (
                                 <button
                                     key={cat}
-                                    onClick={() => setSelectedCategory(cat)}
+                                    onClick={() => setSelectedCategory(prev => prev === cat ? 'All' : cat)}
                                     className={`px-3 py-1 rounded transition-all ${selectedCategory === cat ? 'bg-fuchsia-900/40 border border-fuchsia-500 text-fuchsia-400' : 'bg-slate-800 border border-slate-700 text-slate-400 hover:border-slate-600'}`}
                                 >
                                     {cat}
