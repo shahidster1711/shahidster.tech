@@ -215,7 +215,7 @@ const HomePage = () => {
                             </h2>
                             <div className="flex items-center gap-2 text-xl text-slate-400">
                                 <span className="text-slate-500">@</span>
-                                <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" alt="SingleStore Logo" className="w-6 h-6 rounded-full grayscale hover:grayscale-0 transition-all opacity-80" />
+                                <img src="https://logo.svgcdn.com/simple-icons/singlestore-dark.png" alt="SingleStore Logo" className="w-6 h-6 rounded-full transition-all" />
                                 <span className="font-semibold text-slate-200">SingleStore DB</span>
                             </div>
                         </div>
@@ -251,7 +251,7 @@ const HomePage = () => {
                             </div>
                             <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl inline-flex items-center gap-4 max-w-sm">
                                 <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center p-1.5">
-                                    <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" alt="S2" className="w-full h-full object-contain" />
+                                    <img src="https://logo.svgcdn.com/simple-icons/singlestore-dark.png" alt="S2" className="w-full h-full object-contain" />
                                 </div>
                                 <div>
                                     <div className="text-sm font-bold text-slate-200">SingleStore DB</div>
@@ -429,7 +429,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">Jan 2024 - Present</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://avatars.githubusercontent.com/u/103138328?s=200&v=4" className="w-5 h-5 rounded-full grayscale opacity-70" alt="logo" />
+                                <img src="https://logo.svgcdn.com/simple-icons/singlestore-dark.png" className="w-5 h-5 rounded-full" alt="logo" />
                                 <span className="text-slate-300 font-medium">SingleStore DB</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
@@ -497,7 +497,7 @@ const HomePage = () => {
 
                     <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-2xl hover:border-blue-500/30 transition-all flex items-start gap-6">
                         <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shrink-0 border border-slate-700 p-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8d/Jain_University_logo.png/200px-Jain_University_logo.png" alt="Jain University" className="w-full h-full object-contain" />
+                            <img src="https://www.jainuniversity.ac.in/jain/theme/assets/images/Jain-logo.png" alt="Jain University" className="w-full h-full object-contain" />
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-slate-100">BCA - Cloud Technology & Information Security</h3>
