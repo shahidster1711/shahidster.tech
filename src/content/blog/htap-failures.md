@@ -18,6 +18,8 @@ HTAP is not about feature breadth. It is about how contention, memory pressure, 
 
 Distributed SQL doesn't hide this. It exposes it.
 
+> **Part of the Distributed Systems Guide**: This post explores production failure modes in HTAP systems. For foundational concepts, start with [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases).
+
 ---
 
 ## TL;DR

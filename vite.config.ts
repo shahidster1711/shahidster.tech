@@ -16,6 +16,7 @@ export default defineConfig({
   ssgOptions: {
     script: 'async',
     formatting: 'minify',
+    dirStyle: 'nested',
     onFinished() { console.log('✅ SSG Generation Complete') },
     includedRoutes(paths) {
       // Dynamically discover all blog routes for pre-rendering

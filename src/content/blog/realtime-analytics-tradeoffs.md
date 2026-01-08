@@ -9,6 +9,8 @@ image: "/blog-images/realtime-analytics.jpg"
 
 # Real-Time Analytics: Trade-offs and Best Practices
 
+> **Part of the Distributed Systems Guide**: This post explores architectural patterns for real-time analytics. For distributed database fundamentals, start with [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases).
+
 Building real-time analytics systems requires balancing speed, accuracy, and cost. Here's what I've learned from building and supporting real-time data pipelines at scale.
 
 ## What is "Real-Time"?
@@ -268,6 +270,12 @@ Real-time analytics requires:
 5. Plan for failure and late data
 
 Start simple, measure, and scale incrementally.
+
+## Related Resources
+
+- [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases) - Foundational concepts for distributed systems
+- [How SingleStore Handles Real-Time Analytics at Scale](/blog/singlestore-real-time-analytics) - Concrete HTAP implementation example
+- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes
 
 ---
 

@@ -130,10 +130,31 @@ const HomePage = () => {
                         <div className="w-10 h-10"><Logo /></div>
                         <div className="text-xl font-bold text-slate-100">shahidster.tech</div>
                     </div>
-                    <div className="hidden md:flex space-x-8 text-sm font-medium">
-                        {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
-                            <button key={item} onClick={() => scrollToSection(item.toLowerCase() === 'skills' ? 'technical-arsenal' : item.toLowerCase())} className="hover:text-fuchsia-400 transition-colors uppercase tracking-wide text-xs font-semibold">{item}</button>
+                    <div className="hidden md:flex space-x-8 text-sm font-medium items-center">
+                        {['About', 'Experience', 'Technical Arsenal', 'Certifications'].map((item) => (
+                            <button key={item} onClick={() => scrollToSection(item === 'Technical Arsenal' ? 'technical-arsenal' : item.toLowerCase())} className="hover:text-fuchsia-400 transition-colors uppercase tracking-wide text-xs font-semibold">{item}</button>
                         ))}
+
+                        {/* Blogs Dropdown */}
+                        <div className="relative group">
+                            <button onClick={() => scrollToSection('blog')} className="hover:text-fuchsia-400 transition-colors uppercase tracking-wide text-xs font-semibold flex items-center gap-1">
+                                Blogs
+                                <svg className="group-hover:rotate-180 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14"><path d="m6 9 6 6 6-6" /></svg>
+                            </button>
+                            <div className="absolute left-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2 z-50">
+                                {['Deep Dives', 'Technical Briefs', 'Production Incidents', 'Architecture'].map((sub) => (
+                                    <button
+                                        key={sub}
+                                        onClick={() => scrollToSection('blog')}
+                                        className="w-full text-left px-4 py-2 text-xs text-slate-400 hover:text-fuchsia-400 hover:bg-slate-800 transition-colors"
+                                    >
+                                        {sub}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button onClick={() => scrollToSection('contact')} className="hover:text-fuchsia-400 transition-colors uppercase tracking-wide text-xs font-semibold">Connect</button>
                     </div>
                     <button className="md:hidden text-slate-300" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                         {isMobileMenuOpen ? <X /> : <Menu />}
@@ -141,10 +162,17 @@ const HomePage = () => {
                 </div>
                 {/* Mobile Menu */}
                 {isMobileMenuOpen && (
-                    <div className="absolute top-0 left-0 w-full h-screen bg-slate-950/95 flex flex-col items-center justify-center space-y-8 md:hidden">
-                        {['About', 'Experience', 'Skills', 'Certifications', 'Contact'].map((item) => (
-                            <button key={item} onClick={() => scrollToSection(item.toLowerCase() === 'skills' ? 'technical-arsenal' : item.toLowerCase())} className="text-2xl font-bold text-slate-300 uppercase tracking-wider">{item}</button>
+                    <div className="absolute top-0 left-0 w-full h-screen bg-slate-950/95 flex flex-col items-center justify-center space-y-6 md:hidden">
+                        {['About', 'Experience', 'Technical Arsenal', 'Certifications'].map((item) => (
+                            <button key={item} onClick={() => scrollToSection(item === 'Technical Arsenal' ? 'technical-arsenal' : item.toLowerCase())} className="text-xl font-bold text-slate-300 uppercase tracking-wider">{item}</button>
                         ))}
+                        <div className="flex flex-col items-center space-y-3 pt-4 border-t border-slate-800 w-full max-w-[200px]">
+                            <span className="text-[10px] text-slate-500 uppercase tracking-[0.3em]">Knowledge Base</span>
+                            {['Deep Dives', 'Technical Briefs', 'Production Incidents', 'Architecture'].map((sub) => (
+                                <button key={sub} onClick={() => scrollToSection('blog')} className="text-sm font-medium text-slate-400 hover:text-fuchsia-400 uppercase">{sub}</button>
+                            ))}
+                        </div>
+                        <button onClick={() => scrollToSection('contact')} className="text-xl font-bold text-slate-300 uppercase tracking-wider pt-4">Connect</button>
                     </div>
                 )}
             </nav>
@@ -182,7 +210,7 @@ const HomePage = () => {
                         </div>
 
                         <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
-                            Specializing in robust database architecture, cloud infrastructure optimization, and high-availability systems. I bridge the gap between complex data problems and seamless solutions.
+                            A technical resource for engineers building high-performance distributed systems. Shared production briefings, architectural deep-dives, and incident reports from the trenches of cloud database engineering.
                         </p>
 
                         <div className="flex flex-wrap gap-4 pt-4">
@@ -208,7 +236,7 @@ const HomePage = () => {
                         <div className="mt-8 pt-8 border-t border-slate-800/50">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="text-fuchsia-400/80"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg></span>
-                                <span className="text-xs font-bold text-slate-500 tracking-widest uppercase">Active Endorser & Power User</span>
+                                <span className="text-xs font-bold text-slate-500 tracking-widest uppercase">Verified Systems Expertise</span>
                             </div>
                             <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl inline-flex items-center gap-4 max-w-sm">
                                 <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center">
@@ -394,7 +422,7 @@ const HomePage = () => {
                                 <span className="text-slate-300 font-medium">SingleStore DB</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
-                                Provide Tier-2/3 support for SingleStore's cloud-native and on-premise databases. Troubleshoot complex infrastructure issues using SQL, NoSQL, Linux, and AWS tools. Collaborate with product engineering to accelerate incident resolution.
+                                Resolving Tier-2/3 distributed systems challenges for SingleStore's cloud-native and hybrid fleets. Root-cause analysis of high-scale infrastructure failures, query engine optimizations, and cross-functional engineering support for Fortune 500 implementations.
                             </p>
                             <div className="flex flex-wrap gap-2 mt-4">
                                 {['SingleStore', 'SQL', 'Linux', 'AWS', 'Python'].map(tech => (
@@ -468,17 +496,27 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* Blog Teaser */}
+            {/* Systems Engineering Section */}
             <section id="blog" className="py-24 bg-slate-900/30">
                 <div className="max-w-6xl mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-slate-100 mb-12">Engineering Logs</h2>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                        <div>
+                            <h2 className="text-3xl font-bold text-slate-100">Systems Engineering</h2>
+                            <p className="text-slate-500 mt-2 font-mono text-sm uppercase tracking-wider">Technical Briefs & Production Notes</p>
+                        </div>
+                        <div className="flex gap-4 text-xs font-mono">
+                            <span className="px-3 py-1 bg-fuchsia-900/20 border border-fuchsia-500/30 text-fuchsia-400 rounded">Deep Dives</span>
+                            <span className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-400 rounded">Incidents</span>
+                        </div>
+                    </div>
+
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {/* Pillar Link */}
                         <Link to={PILLAR_PAGE.slug} className="col-span-full md:col-span-2 bg-gradient-to-br from-slate-900 to-fuchsia-900/20 p-8 rounded-2xl border border-slate-800 group hover:border-fuchsia-500/30 transition-all">
-                            <span className="text-fuchsia-400 text-xs font-mono uppercase">Featured Guide</span>
+                            <span className="text-fuchsia-400 text-xs font-mono uppercase tracking-[0.2em]">Pillar Strategy</span>
                             <h3 className="text-2xl font-bold text-slate-100 mt-2 mb-4 group-hover:text-fuchsia-300">{PILLAR_PAGE.title}</h3>
-                            <p className="text-slate-400">A comprehensive look at distributed database architectures, CAP theorem, and sharding.</p>
-                            <div className="mt-6 flex items-center text-fuchsia-400 font-medium">Read Guide <ArrowRight size={16} className="ml-2" /></div>
+                            <p className="text-slate-400">Architectural foundations: CAP theorem latency trade-offs, sharding strategies, and multi-node consensus in production environments.</p>
+                            <div className="mt-6 flex items-center text-fuchsia-400 font-medium">Execute Deep Dive <ArrowRight size={16} className="ml-2" /></div>
                         </Link>
                         {/* Cluster Links */}
                         {Object.values(CLUSTER_ARTICLES).slice(0, 4).map(article => (

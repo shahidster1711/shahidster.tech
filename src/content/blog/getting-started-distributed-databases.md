@@ -40,6 +40,8 @@ CREATE TABLE users (
 - Avoid keys that change frequently
 - Consider query patterns when selecting shard keys
 
+> **Deep Dive:** For a detailed look at how distributed SQL query engines handle cross-shard execution and data movement, see [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine).
+
 ### 2. Replication
 
 Replication creates copies of data across nodes for:
@@ -64,6 +66,8 @@ The **CAP theorem** states you can only guarantee 2 of 3:
 - **Partition Tolerance**: System works despite network failures
 
 Most distributed databases choose **eventual consistency** to maintain availability.
+
+> **Production Reality:** Understanding CAP trade-offs is critical when running HTAP systems at scale. Learn from actual production failures in [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures).
 
 ## Real-World Example: E-Commerce Platform
 
@@ -134,6 +138,8 @@ SELECT * FROM orders WHERE user_id = 12345;
 SELECT * FROM orders WHERE total > 1000;
 ```
 
+> **Optimization Guide:** To systematically debug and fix slow queries in distributed systems, follow the diagnostic approach in [Debugging Slow Database Queries: A Systematic Approach](/blog/debugging-slow-database-queries).
+
 ## Monitoring & Observability
 
 Key metrics to track:
@@ -170,11 +176,12 @@ Distributed databases enable massive scale, but require careful design decisions
 
 Start simple, measure performance, and scale incrementally as your needs grow.
 
-## Further Reading
+## Related Resources
 
-- [CAP Theorem Explained](https://example.com)
-- [Designing Data-Intensive Applications](https://example.com)
-- [SingleStore Architecture Guide](https://example.com)
+- [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine) - Deep dive into distributed query execution
+- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes and lessons learned
+- [Debugging Slow Database Queries](/blog/debugging-slow-database-queries) - Systematic query optimization approach
+- [Real-Time Analytics: Trade-offs and Best Practices](/blog/realtime-analytics-tradeoffs) - Architectural decisions for analytics systems
 
 ---
 

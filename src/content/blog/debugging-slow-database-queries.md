@@ -8,6 +8,8 @@ author: "Shahid Moosa"
 
 # Debugging Slow Database Queries: A Systematic Approach
 
+> **Part of the Distributed Systems Guide**: This post covers systematic query optimization techniques. For architectural foundations, start with [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases).
+
 Slow queries are inevitable at scale. Here's my framework for debugging them efficiently, based on years of supporting production databases.
 
 ## The 4-Step Framework
@@ -202,6 +204,12 @@ def identify_slow_queries():
 2. **Index strategically**, not excessively
 3. **Test with production-like data** volume
 4. **Monitor in production** to catch regressions
+
+## Related Resources
+
+- [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases) - Foundational distributed database concepts
+- [Understanding SingleStore's Execution Engine](/blog/singlestore-execution-engine) - How distributed query execution works
+- [Running HTAP Systems: What Actually Fails at Scale](/blog/htap-failures) - Production failure modes
 
 ---
 
