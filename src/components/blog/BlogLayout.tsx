@@ -12,7 +12,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children, showBackButton = true
         <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-fuchsia-500/30">
             {/* Navigation */}
             <nav className="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4">
-                <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <Link
                         to="/"
                         className="flex items-center gap-3 text-slate-100 hover:text-fuchsia-400 transition-colors group"
@@ -41,7 +41,7 @@ const BlogLayout: React.FC<BlogLayoutProps> = ({ children, showBackButton = true
 
             {/* Footer */}
             <footer className="py-8 text-center text-slate-600 text-sm border-t border-slate-900 mt-24">
-                <div className="max-w-6xl mx-auto px-6">
+                <div className="max-w-7xl mx-auto px-6">
                     <p>© {new Date().getFullYear()} Shahid Moosa. Built with React & Tailwind CSS.</p>
                 </div>
             </footer>
