@@ -7,12 +7,16 @@ import { Link } from 'react-router-dom';
 import { PILLAR_PAGE, CLUSTER_ARTICLES } from '../lib/blog-graph';
 
 const Logo = () => (
-    <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 5 L93.3 30 V80 L50 105 L6.7 80 V30 L50 5Z" className="stroke-slate-600 fill-slate-900/50" strokeWidth="4" />
-        <path d="M65 35 H45 C35 35 35 50 45 50 H55 C65 50 65 65 55 65 H35" stroke="url(#gradient)" strokeWidth="8" strokeLinecap="round" />
-        <defs><linearGradient id="gradient" x1="35" y1="35" x2="65" y2="65" gradientUnits="userSpaceOnUse"><stop stopColor="#a855f7" /><stop offset="1" stopColor="#3b82f6" /></linearGradient></defs>
+    <svg viewBox="0 0 100 100" className="w-full h-full text-slate-100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Abstract Geometric 'S' - Senior Engineer Style */}
+        <rect x="20" y="20" width="60" height="15" fill="currentColor" />
+        <rect x="20" y="35" width="15" height="15" fill="currentColor" />
+        <rect x="20" y="50" width="60" height="15" fill="currentColor" />
+        <rect x="65" y="65" width="15" height="15" fill="currentColor" />
+        <rect x="20" y="80" width="60" height="15" fill="currentColor" />
     </svg>
 );
+
 
 const AudioPlayer = () => {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -131,8 +135,10 @@ const HomePage = () => {
             <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4' : 'bg-transparent py-6'}`}>
                 <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
                     <div className="flex items-center gap-3 cursor-pointer group" onClick={() => scrollToSection('home')} role="button" aria-label="Return to homepage" tabIndex={0}>
-                        <div className="w-10 h-10"><Logo /></div>
-                        <div className="text-xl font-bold text-slate-100">shahidster.tech</div>
+                        <div className="w-8 h-8"><Logo /></div>
+                        <div className="text-xl font-bold text-slate-100" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                            shahidster<span className="text-fuchsia-500 animate-pulse">_</span>
+                        </div>
                     </div>
                     <div className="hidden md:flex space-x-8 text-sm font-medium items-center">
                         {['About', 'Experience', 'Technical Arsenal', 'Certifications'].map((item) => (
