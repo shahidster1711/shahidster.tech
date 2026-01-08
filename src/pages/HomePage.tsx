@@ -134,7 +134,7 @@ const HomePage = () => {
         <div className="min-h-screen bg-slate-950 text-slate-400 font-sans selection:bg-fuchsia-500/30 selection:text-fuchsia-200">
             {/* Navbar */}
             <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 py-4' : 'bg-transparent py-6'}`}>
-                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <div className="max-w-[1440px] mx-auto px-6 flex justify-between items-center">
                     <div className="flex items-center gap-3 cursor-pointer group" onClick={() => scrollToSection('home')} role="button" aria-label="Return to homepage" tabIndex={0}>
                         <div className="w-8 h-8"><Logo /></div>
                         <div className="text-xl font-bold text-slate-100" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
@@ -189,12 +189,12 @@ const HomePage = () => {
             </nav>
 
             {/* Hero */}
-            <section id="home" className="min-h-screen flex items-center pt-32 pb-20 relative overflow-hidden">
+            <section id="home" className="min-h-screen flex items-center pt-24 lg:pt-32 pb-20 relative overflow-hidden">
                 {/* Background Gradients */}
                 <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-fuchsia-600/10 rounded-full blur-[100px] -z-10"></div>
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] -z-10"></div>
 
-                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center">
+                <div className="max-w-[1440px] mx-auto px-6 grid md:grid-cols-2 gap-12 lg:gap-32 items-center">
 
                     {/* Text Content */}
                     <div className="space-y-8 order-2 lg:order-1">
@@ -215,7 +215,7 @@ const HomePage = () => {
                             </h2>
                             <div className="flex items-center gap-2 text-xl text-slate-400">
                                 <span className="text-slate-500">@</span>
-                                <img src="https://logo.svgcdn.com/simple-icons/singlestore-dark.png" alt="SingleStore Logo" className="w-6 h-6 rounded-full transition-all" />
+                                <img src="https://logo.svgcdn.com/simple-icons/singlestore-dark.png" alt="SingleStore Logo" className="w-6 h-6 rounded-full" />
                                 <span className="font-semibold text-slate-200">SingleStore DB</span>
                             </div>
                         </div>
@@ -266,7 +266,7 @@ const HomePage = () => {
                     <div className="order-1 lg:order-2 flex flex-col items-center">
                         <div className="relative group mb-8">
                             <div className="absolute -inset-1 bg-gradient-to-r from-fuchsia-600 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-                            <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[400px] lg:h-[400px] rounded-full overflow-hidden border-4 border-slate-900 shadow-2xl">
+                            <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[440px] lg:h-[440px] xl:w-[520px] xl:h-[520px] rounded-full overflow-hidden border-4 border-slate-900 shadow-2xl">
                                 <img src="/IMG_1601.jpeg" alt="Shahid Moosa" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                             </div>
                         </div>
@@ -414,7 +414,7 @@ const HomePage = () => {
 
             {/* Experience */}
             <section id="experience" className="py-24">
-                <div className="max-w-7xl mx-auto px-6">
+                <div className="max-w-[1440px] mx-auto px-6">
                     <div className="flex items-center gap-4 mb-16">
                         <div className="h-1 w-12 bg-fuchsia-500 rounded-full"></div>
                         <h2 className="text-3xl font-bold text-slate-100">Experience</h2>
@@ -450,7 +450,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">July 2022 - Jan 2024</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 grayscale invert opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 invert group-hover:scale-105 transition-all" />
                                 <span className="text-slate-300 font-medium font-mono text-xs tracking-wider">Amazon Web Services (AWS)</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
@@ -471,7 +471,7 @@ const HomePage = () => {
                                 <span className="font-mono text-fuchsia-400 text-sm">Apr 2020 - July 2022</span>
                             </div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" alt="Infosys" className="h-4 grayscale invert opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" alt="Infosys" className="h-4 invert group-hover:scale-105 transition-all" />
                                 <span className="text-slate-300 font-medium md:ml-1">Infosys</span>
                             </div>
                             <p className="text-slate-400 max-w-3xl leading-relaxed">
@@ -510,7 +510,7 @@ const HomePage = () => {
 
             {/* Systems Engineering Section */}
             <section id="blog" className="py-24 bg-slate-900/30">
-                <div className="max-w-7xl mx-auto px-6">
+                <div className="max-w-[1440px] mx-auto px-6">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                         <div>
                             <h2 className="text-3xl font-bold text-slate-100">Systems Engineering</h2>
