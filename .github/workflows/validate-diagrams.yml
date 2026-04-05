@@ -16,6 +16,9 @@ jobs:
   validate-diagrams:
     name: Validate and Export Mermaid Diagrams
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     
     steps:
       - name: Checkout code
@@ -112,12 +115,22 @@ jobs:
             
             Download the artifacts to preview the SVG files.`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              if (error?.status === 403) {
+                const statusDetail = error?.status ? ` (status: ${error.status})` : '';
+                const messageDetail = error?.message ? `: ${error.message}` : '.';
+                core.warning(`Skipping PR comment: GITHUB_TOKEN cannot write issue comments in this run context${statusDetail}${messageDetail}`);
+              } else {
+                throw error;
+              }
+            }
       
       - name: Validate diagram accessibility
         run: |
@@ -125,6 +138,7 @@ jobs:
           
           # Check that diagrams have proper titles and descriptions
           if [ -d "public/diagrams" ]; then
+
             for svg in public/diagrams/*.svg; do
               if [ -f "$svg" ]; then
                 if ! grep -q '<title>' "$svg"; then
@@ -132,6 +146,7 @@ jobs:
                 fi
               fi
             done
+
           fi
           
           echo "✅ Accessibility check complete"
