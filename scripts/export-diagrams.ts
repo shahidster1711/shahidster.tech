@@ -46,6 +46,18 @@ async function exportDiagramToSVG(diagram: DiagramExport): Promise<void> {
     const tempMmdPath = path.join(__dirname, `temp-${Date.now()}.mmd`);
     fs.writeFileSync(tempMmdPath, diagram.source);
 
+    const shouldDisableSandbox =
+        Boolean(process.env.CI) ||
+        Boolean(process.env.GITHUB_ACTIONS) ||
+        process.env.MERMAID_NO_SANDBOX === 'true';
+
+    const puppeteerConfig = {
+        headless: 'new',
+        ...(shouldDisableSandbox
+            ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+            : {}),
+    };
+
     try {
         // Ensure output directory exists
         const outputDir = path.dirname(diagram.outputPath);
@@ -58,11 +70,7 @@ async function exportDiagramToSVG(diagram: DiagramExport): Promise<void> {
             tempMmdPath,
             diagram.outputPath as `${string}.svg`,
             {
-                puppeteerConfig: {
-                    // GitHub Actions runners block the Chromium sandbox
-                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                    headless: 'new',
-                },
+                puppeteerConfig,
                 parseMMDOptions: {
                     mermaidConfig: {
                         theme: 'dark',

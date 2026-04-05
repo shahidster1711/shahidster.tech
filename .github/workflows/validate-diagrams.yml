@@ -17,6 +17,7 @@ jobs:
     name: Validate and Export Mermaid Diagrams
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       issues: write
     
     steps:
