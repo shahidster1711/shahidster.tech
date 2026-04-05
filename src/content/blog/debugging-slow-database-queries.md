@@ -7,9 +7,7 @@ author: "Shahid Moosa"
 slug: "debugging-slow-database-queries"
 ---
 
-# Debugging Slow Database Queries: A Systematic Approach
-
-> **Part of the Pillar: Distributed Systems Failure Modes.** 
+> **Part of the Pillar: Distributed Systems Failure Modes.**
 > This post covers systematic query optimization techniques. For architectural foundations, start with [Why HTAP Systems Fail Quietly](/blog/htap-systems-fail-quietly).
 
 Slow queries are inevitable at scale. Here's my framework for debugging them efficiently, based on years of supporting production databases.
@@ -47,6 +45,7 @@ GROUP BY u.user_id;
 ```
 
 **Key indicators:**
+
 - `Seq Scan` on large tables → Missing index
 - `Nested Loop` with high row counts → Join inefficiency
 - `Sort` operation → Consider covering indexes
@@ -104,6 +103,7 @@ ab -n 1000 -c 10 http://api.example.com/users
 ## Real-World Case Study
 
 ### Problem
+
 Dashboard query taking 45 seconds during peak hours:
 
 ```sql
@@ -116,6 +116,7 @@ LIMIT 30;
 ```
 
 ### Root Cause
+
 1. No index on `status`
 2. `DATE()` function prevents index usage
 3. Full table scan on 100M+ rows

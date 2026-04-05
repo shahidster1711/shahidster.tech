@@ -8,8 +8,6 @@ slug: "singlestore-vs-postgresql"
 image: "/blog-images/singlestore-postgres-comparison.png"
 ---
 
-# SingleStore vs PostgreSQL: When Distributed SQL Actually Wins
-
 > [!NOTE]
 > This post is Part 1 of the **[Distributed SQL Deep Dive](/blog/distributed-sql-series-overview)** series.
 
@@ -30,6 +28,7 @@ It's about when a single-node database stops failing gracefully—and when a dis
 Every growing system reaches a point where performance problems stop being "bad queries" and start being **physics**.
 
 You:
+
 - add indexes
 - add read replicas
 - tune connection pools
@@ -49,6 +48,7 @@ This post explains how to tell the difference.
 ## Latency vs Throughput: The Trade-Off Most Teams Miss
 
 PostgreSQL is exceptional at low-latency OLTP when:
+
 - concurrency is moderate
 - writes are predictable
 - reads are selective and indexed
@@ -58,6 +58,7 @@ At that scale, a single well-tuned node delivers excellent p95 latency.
 **The problem starts when throughput pressure rises.**
 
 Symptoms look familiar:
+
 - WAL fsync pressure under heavy writes
 - More indexes → slower writes
 - More connections → lock contention
@@ -67,7 +68,7 @@ You can keep latency low **or** push more work through the system—but not both
 
 ### Latency vs Throughput Curves
 
-```
+```text
 PostgreSQL (single node):
 Concurrency 1-5 → p95 latency: 1ms → 15ms (exponential growth)
 
@@ -88,12 +89,14 @@ That distinction matters.
 Nobody plans to shard Postgres on day one.
 
 It sneaks up on you:
+
 - multi-tenant tables grow
 - you shard by `tenant_id`
 - app-level routing handles it
 - everything works… until it doesn't
 
 Then the pain shows up:
+
 - **cross-tenant reporting becomes app-side fan-out**
 - **schema migrations must coordinate across shards**
 - **global constraints quietly disappear**
@@ -140,12 +143,14 @@ SingleStore's real advantage isn't raw speed—**it's that cross-partition queri
 ## What Distributed SQL Actually Buys You
 
 In systems like SingleStore:
+
 - **aggregators plan queries**
 - **leaves execute where data lives**
 - **joins and aggregations run in parallel**
 - **results are merged efficiently**
 
 This matters when:
+
 - queries scan large datasets
 - aggregations dominate workload
 - freshness matters (seconds, not hours)
@@ -163,12 +168,14 @@ If your system needs to answer:
 Vendor blogs rarely include this part.
 
 **Do not use distributed SQL if:**
+
 - your workload is <500 TPS
 - analytics can lag by minutes or hours
 - a read replica + warehouse solves the problem
 - your team isn't ready to operate a cluster
 
 Distributed systems tax you in:
+
 - operational overhead
 - debugging complexity
 - network-related failure modes
@@ -219,6 +226,7 @@ flowchart TD
 I wouldn't chase architecture early.
 
 I'd:
+
 - **define hard thresholds** (QPS, data size, freshness)
 - **exhaust Postgres properly**
 - **treat distributed SQL as an explicit inflection point**
@@ -234,12 +242,14 @@ Scaling isn't about tools.
 At a previous role supporting a SaaS analytics platform:
 
 **Before (PostgreSQL + app-level sharding):**
+
 - 12 Postgres instances
 - Custom routing layer
 - Cross-tenant reports took 30-45 seconds
 - Schema migrations required downtime windows
 
 **After (SingleStore):**
+
 - 3-node cluster
 - Native distributed queries
 - Same reports: 2-3 seconds
@@ -252,6 +262,7 @@ At a previous role supporting a SaaS analytics platform:
 ## When to Stick with PostgreSQL
 
 I still recommend PostgreSQL for:
+
 - **Traditional OLTP workloads** (e-commerce, SaaS apps)
 - **Teams without distributed systems experience**
 - **Workloads where consistency > throughput**

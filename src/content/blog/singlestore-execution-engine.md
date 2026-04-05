@@ -8,11 +8,8 @@ slug: "distributed-sql-execution-engines"
 image: "/blog-images/singlestore-execution-engine.png"
 ---
 
-# How Distributed SQL Execution Engines Really Work
-
-> **Pillar Post: Query Shape & Execution Reality.** 
+> **Pillar Post: Query Shape & Execution Reality.**
 > This is a deep dive into how data moves across a cluster to satisfy a query. For how these systems fail, see [Why HTAP Systems Fail Quietly](/blog/htap-systems-fail-quietly).
-
 
 Most engineers treat distributed SQL databases as "PostgreSQL, but faster and spread across many nodes." This mental model fails the moment you hit production and discover that a simple JOIN that ran in 100ms on your laptop now takes 30 seconds at scale.
 
@@ -77,6 +74,7 @@ flowchart TB
 **Role:** Planning and merging
 
 **What they do:**
+
 - Parse SQL
 - Build execution plan
 - Dispatch subqueries to leaves
@@ -84,6 +82,7 @@ flowchart TB
 - Return final result to client
 
 **What they DON'T do:**
+
 - Store data (usually)
 - Execute full table scans
 - Do heavy computation (unless necessary)
@@ -93,6 +92,7 @@ flowchart TB
 **Role:** Data storage and local execution
 
 **What they do:**
+
 - Store data shards
 - Execute local scans
 - Perform local joins (if data is co-located)
@@ -110,6 +110,7 @@ This is where most engineers get confused.
 ### Planning (Cheap)
 
 The aggregator:
+
 1. Parses your SQL
 2. Figures out which tables are involved
 3. Determines which shards have the data
@@ -122,6 +123,7 @@ The aggregator:
 ### Execution (Expensive)
 
 The real work:
+
 1. Aggregator sends plan to leaves
 2. Leaves scan their local data
 3. Leaves execute local operations (filters, joins, aggregations)
@@ -174,7 +176,7 @@ In a distributed database, data also moves **across the network**.
 
 ### Three Types of Data Movement
 
-**1. Local scan (no network)**
+#### 1. Local scan (no network)
 
 ```sql
 SELECT * FROM orders WHERE order_date > '2026-01-01';
@@ -184,7 +186,7 @@ Each leaf scans its own shard. Results go to aggregator.
 
 **Network cost:** Only the results (could be small)
 
-**2. Broadcast (aggregator → all leaves)**
+#### 2. Broadcast (aggregator → all leaves)
 
 ```sql
 SELECT o.*, u.name 
@@ -196,7 +198,7 @@ If `users` is small and not sharded, the aggregator broadcasts the entire table 
 
 **Network cost:** `size(users) × number_of_leaves`
 
-**3. Reshuffle (leaf → leaf)**
+#### 3. Reshuffle (leaf → leaf)
 
 ```sql
 SELECT o.*, p.name
@@ -211,10 +213,12 @@ If `orders` is sharded by `order_id` and `products` is sharded by `product_id`, 
 ### The Hidden Cost
 
 Moving 1GB across a network:
+
 - **10 Gbps network:** ~1 second
 - **1 Gbps network:** ~10 seconds
 
 But you're not just moving data once. You're:
+
 - Serializing it
 - Compressing it
 - Sending it
@@ -312,6 +316,7 @@ flowchart TB
 ```
 
 **What happens:**
+
 1. Each leaf scans its local orders
 2. Data is reshuffled across the network by `product_id`
 3. Each leaf now has orders + products for the same product IDs
@@ -336,6 +341,7 @@ JOIN order_status s ON o.status_id = s.status_id;
 ```
 
 **What happens:**
+
 1. Aggregator broadcasts `order_status` (tiny) to all leaves
 2. Each leaf joins locally
 
@@ -375,6 +381,7 @@ flowchart TB
 **Execution:**
 
 **On each leaf:**
+
 ```sql
 SELECT user_id, COUNT(*) as cnt, SUM(amount) as total
 FROM orders
@@ -383,6 +390,7 @@ GROUP BY user_id;
 ```
 
 **On aggregator:**
+
 ```sql
 -- Merge partial results
 SELECT user_id, SUM(cnt), SUM(total)
@@ -407,6 +415,7 @@ SELECT COUNT(DISTINCT user_id) FROM orders;
 ```
 
 **What happens:**
+
 1. Each leaf sends all unique `user_id` values to aggregator
 2. Aggregator deduplicates
 
@@ -417,11 +426,13 @@ SELECT COUNT(DISTINCT user_id) FROM orders;
 ## Why "It Worked in Staging" Means Nothing
 
 Your staging environment:
+
 - **Data:** 1GB
 - **Nodes:** 1 leaf
 - **Query:** Fast
 
 Production:
+
 - **Data:** 1TB
 - **Nodes:** 10 leaves
 - **Query:** Timeout
@@ -431,11 +442,13 @@ What changed?
 ### 1. Data Movement Scales Non-Linearly
 
 **Staging:**
+
 - No reshuffling (single node)
 - No network overhead
 - All data in memory
 
 **Production:**
+
 - Reshuffling 100GB across network
 - Network becomes bottleneck
 - Data doesn't fit in memory
@@ -443,6 +456,7 @@ What changed?
 ### 2. Query Plans Change
 
 The query planner chooses different strategies based on:
+
 - Table sizes
 - Data distribution
 - Available memory
@@ -598,6 +612,7 @@ flowchart LR
 Don't trust staging. Use production data size, even if it's in a dev environment.
 
 **Tooling:**
+
 - `EXPLAIN` on production (read-only)
 - Synthetic data generators
 - Cloned production database (sanitized)
@@ -607,6 +622,7 @@ Don't trust staging. Use production data size, even if it's in a dev environment
 Shard key is the most important schema decision.
 
 **Ask:**
+
 - What are the most common joins?
 - Can I co-locate data for those joins?
 - What's the cardinality of the shard key?
@@ -617,11 +633,13 @@ Shard key is the most important schema decision.
 ### 3. Monitor Data Movement, Not Just CPU
 
 **Track:**
+
 - Network bytes sent/received per query
 - Reshuffle frequency
 - Broadcast sizes
 
 **Alert when:**
+
 - A query moves >10GB
 - Network bandwidth exceeds 70%
 - Reshuffle operations spike
@@ -636,6 +654,7 @@ JOIN products p ON o.product_id = p.product_id;
 ```
 
 **Look for:**
+
 - `"exchange"` (data movement between nodes)
 - `"broadcast"` (full table sent to all nodes)
 - `"repartition"` (data reshuffled)
@@ -657,6 +676,7 @@ Limits prevent accidental full-table scans.
 ### 6. Separate OLTP and OLAP Workloads
 
 Don't mix:
+
 - Transactional queries (point lookups)
 - Analytical queries (full scans, aggregations)
 
@@ -671,6 +691,7 @@ Don't mix:
 Understanding the execution engine gives you **predictive power**.
 
 You can look at a query and know:
+
 - Will it reshape data?
 - How much network traffic will it generate?
 - Why it might work locally but fail in production?
@@ -691,4 +712,3 @@ It's coordinators dispatching work, workers executing locally, and network movin
 ---
 
 **Have execution engine questions?** [Email me](mailto:connect2shahidmoosa@gmail.com) or connect on [LinkedIn](https://linkedin.com).
-
