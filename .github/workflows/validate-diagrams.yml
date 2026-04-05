@@ -127,7 +127,7 @@ jobs:
           
           # Check that diagrams have proper titles and descriptions
           if [ -d "public/diagrams" ]; then
-            shopt -s nullglob
+
             for svg in public/diagrams/*.svg; do
               if [ -f "$svg" ]; then
                 if ! grep -q '<title>' "$svg"; then
@@ -135,7 +135,7 @@ jobs:
                 fi
               fi
             done
-            shopt -u nullglob
+
           fi
           
           echo "✅ Accessibility check complete"

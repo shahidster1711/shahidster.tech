@@ -272,7 +272,7 @@ flowchart TD
     style SLOW3 fill:#ef4444,stroke:#dc2626,color:#f1f5f9
 ```
 
-### The Incident (2)
+### The Incident: Analytics Contention
 
 **Context:**  
 E-commerce platform. Black Friday. Peak traffic: 50K writes/sec.
@@ -476,7 +476,7 @@ Batch job on Leaf 1 caused replication lag → Leaf 3 caught up → disk I/O spi
 
 **The alert happened on the application. The root cause was a batch job on a different node.**
 
-### The Pattern (3)
+### The Pattern: Distributed Failures
 
 In distributed systems:
 
