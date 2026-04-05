@@ -7,8 +7,6 @@ author: "Shahid Moosa"
 image: "/blog-images/realtime-analytics.jpg"
 ---
 
-# Real-Time Analytics: Trade-offs and Best Practices
-
 > **Part of the Distributed Systems Guide**: This post explores architectural patterns for real-time analytics. For distributed database fundamentals, start with [Getting Started with Distributed Databases](/blog/getting-started-distributed-databases).
 
 Building real-time analytics systems requires balancing speed, accuracy, and cost. Here's what I've learned from building and supporting real-time data pipelines at scale.
@@ -29,7 +27,7 @@ Most "real-time" systems are actually near real-time, which is perfectly fine fo
 
 Separate batch and stream processing:
 
-```
+```text
 Events → Kafka → Stream Processor → Real-time View
        ↓
        → Batch Processor → Batch View
@@ -38,10 +36,12 @@ Events → Kafka → Stream Processor → Real-time View
 ```
 
 **Pros:**
+
 - Fault-tolerant (batch layer recomputes if stream fails)
 - Accurate (batch layer ensures correctness)
 
 **Cons:**
+
 - Complex (maintain two codebases)
 - Expensive (duplicate processing)
 
@@ -49,18 +49,20 @@ Events → Kafka → Stream Processor → Real-time View
 
 Stream-only processing:
 
-```
+```text
 Events → Kafka → Stream Processor → Materialized View
                        ↓
                  Replayable for corrections
 ```
 
 **Pros:**
+
 - Simpler (one codebase)
 - Lower latency
 - Easier to reason about
 
 **Cons:**
+
 - Harder to correct historical data
 - Requires replayable event log
 
@@ -140,6 +142,7 @@ WHERE product_id = 'ABC123';
 ### 1. Freshness vs. Accuracy
 
 **Problem**: Real-time data might be incomplete due to:
+
 - Late-arriving events
 - Network delays
 - Processing failures
@@ -160,7 +163,7 @@ if event.timestamp > watermark:
 Lower latency = higher cost:
 
 | Latency | Approach | Cost (relative) |
-|---------|----------|-----------------|
+| ------- | ---------- | --------------- |
 | < 100ms | In-memory stream | 10x |
 | 1-5s | Micro-batching | 3x |
 | 30-60s | Mini-batches | 1x |
@@ -180,6 +183,7 @@ result = db.query("SELECT COUNT(*) FROM events", consistency="eventual")
 ## Practical Example: E-Commerce Dashboard
 
 **Requirements:**
+
 - Display orders/minute in real-time
 - Show top products by revenue (last hour)
 - Track conversion funnel
@@ -224,9 +228,11 @@ app.get('/dashboard/metrics', async (req, res) => {
 ## Common Pitfalls
 
 ### ❌ Over-Engineering
+
 Don't build a Kafka cluster if daily batch jobs suffice.
 
 ### ❌ Ignoring Data Quality
+
 Garbage in, garbage out. Validate at ingestion:
 
 ```python
@@ -237,6 +243,7 @@ def validate_event(event):
 ```
 
 ### ❌ No Backpressure Handling
+
 System crashes when ingestion > processing capacity:
 
 ```python

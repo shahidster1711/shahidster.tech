@@ -8,8 +8,6 @@ slug: "singlestore-real-time-analytics"
 image: "/blog-images/singlestore-htap-architecture.png"
 ---
 
-# How SingleStore Handles Real-Time Analytics at Scale (Without the Fairy Dust)
-
 > [!NOTE]
 > This post is Part 2 of the **[Distributed SQL Deep Dive](/blog/distributed-sql-series-overview)** series.
 
@@ -28,6 +26,7 @@ image: "/blog-images/singlestore-htap-architecture.png"
 Let's be honest: **true real-time analytics doesn't exist at scale**.
 
 What you actually need is:
+
 - **Fresh enough** (seconds to minutes, not hours)
 - **Consistent enough** (no phantom reads during dashboards)
 - **Fast enough** (queries complete before users rage-quit)
@@ -37,6 +36,7 @@ The industry calls this "real-time" because it sounds better than "pretty recent
 ### What You're Really Solving
 
 **The classic problem:**
+
 1. OLTP database handles transactions
 2. ETL job extracts data every hour
 3. Data warehouse runs analytics
@@ -44,6 +44,7 @@ The industry calls this "real-time" because it sounds better than "pretty recent
 5. Business asks: "Why is this 2 hours old?"
 
 **The HTAP promise:**
+
 1. Single database handles both workloads
 2. Analytics run on fresh data
 3. Transactions don't slow down
@@ -79,6 +80,7 @@ flowchart LR
 Your application does normal `INSERT`/`UPDATE`/`DELETE` operations.
 
 These hit the **rowstore**:
+
 - Row-oriented storage (like PostgreSQL)
 - B-tree indexes
 - MVCC for transactions
@@ -92,6 +94,7 @@ These hit the **rowstore**:
 High-throughput event streams from Kafka, Kinesis, etc.
 
 These use **pipelines** that write directly to columnstore:
+
 - Batched writes (not row-by-row)
 - Compressed columnar format
 - Optimized for append-heavy workloads
@@ -104,6 +107,7 @@ These use **pipelines** that write directly to columnstore:
 Historical data from S3, GCS, or data lakes.
 
 Uses `LOAD DATA` for bulk import:
+
 - Parallel loading across cluster
 - Minimal overhead
 - Direct to columnstore
@@ -116,6 +120,7 @@ Uses `LOAD DATA` for bulk import:
 **Most production systems use all three.**
 
 Example: E-commerce fraud detection
+
 - User transactions → rowstore (real-time)
 - Clickstream events → streaming pipeline (seconds)
 - Historical purchase data → batch load (nightly)
@@ -160,6 +165,7 @@ SELECT * FROM orders WHERE created_at > NOW() - INTERVAL 5 MINUTE;
 ```
 
 **Why rowstore wins:**
+
 - Fetching full rows is cheap
 - B-tree index lookup is fast
 - Data is already in memory (hot cache)
@@ -178,6 +184,7 @@ SELECT AVG(order_value) FROM orders WHERE status = 'completed';
 ```
 
 **Why columnstore wins:**
+
 - Only reads needed columns (compression helps)
 - Vectorized execution (SIMD)
 - Parallel scan across partitions
@@ -194,6 +201,7 @@ GROUP BY u.email;
 ```
 
 If `users` is in rowstore and `orders` is in columnstore, the query planner must:
+
 1. Decide which side to broadcast
 2. Shuffle data across nodes
 3. Merge results
@@ -224,6 +232,7 @@ flowchart LR
 ```
 
 **The problem:**
+
 - Transaction happens at 10:00 AM
 - ETL runs at 10:15 AM
 - Dashboard updates at 10:20 AM
@@ -248,6 +257,7 @@ flowchart LR
 ```
 
 **The win:**
+
 - Transaction happens at 10:00 AM
 - Analytics query sees it at 10:00:05 AM (5-second lag)
 - Fraud detected at 10:00:10 AM
@@ -259,10 +269,12 @@ flowchart LR
 ### The Trade-Off
 
 **You traded:**
+
 - Operational complexity (fewer systems)
 - Data freshness (seconds vs minutes)
 
 **For:**
+
 - Higher database load (OLTP + OLAP on same cluster)
 - More expensive infrastructure (need headroom for both workloads)
 - Tighter coupling (can't scale analytics independently)
@@ -275,33 +287,36 @@ Depends on your SLA for freshness.
 
 ## Trade-Offs and When NOT to Use HTAP
 
-### Don't Use HTAP If:
+### Don't Use HTAP If
 
-**1. Your analytics can lag by hours**
+#### 1. Your analytics can lag by hours
 
 If your dashboard updates daily, you don't need HTAP.
 
 Use:
+
 - PostgreSQL + read replicas
 - Nightly ETL to Snowflake/BigQuery
 - Save money, reduce complexity
 
-**2. Your data is <100GB**
+#### 2. Your data is <100GB
 
 HTAP databases are designed for scale.
 
 If your entire dataset fits in memory on a single node, you're paying for features you don't need.
 
 Use:
+
 - PostgreSQL with good indexes
 - Materialized views for aggregations
 - Maybe ClickHouse if you're write-heavy
 
-**3. You can't operate distributed systems**
+#### 3. You can't operate distributed systems
 
 HTAP databases are distributed by nature.
 
 You need to understand:
+
 - Cluster topology
 - Replication lag
 - Partition rebalancing
@@ -309,7 +324,7 @@ You need to understand:
 
 If your team struggles with PostgreSQL replication, HTAP will hurt.
 
-**4. Your workload is purely OLTP or purely OLAP**
+#### 4. Your workload is purely OLTP or purely OLAP
 
 HTAP shines when you have **both** workloads.
 
@@ -347,6 +362,7 @@ flowchart TD
 ### Classic Pipeline
 
 **Failure isolation:**
+
 - App DB fails → transactions down, analytics still work
 - ETL fails → analytics stale, transactions still work
 - Warehouse fails → dashboards down, transactions still work
@@ -356,11 +372,13 @@ flowchart TD
 ### HTAP
 
 **Failure isolation:**
+
 - Database fails → **everything down**
 
 **Blast radius:** Total
 
 **Mitigation:**
+
 - Run replicas (increases cost)
 - Separate read/write workloads (reduces HTAP benefit)
 - Accept the risk (if uptime SLA allows)
@@ -372,28 +390,34 @@ flowchart TD
 Before choosing HTAP, answer these:
 
 **1. What's your freshness SLA?**
+
 - Seconds → HTAP justified
 - Minutes → Maybe HTAP
 - Hours → Don't use HTAP
 
 **2. What's your data volume?**
+
 - <100GB → Don't use HTAP
 - 100GB-1TB → Consider HTAP
 - >1TB → HTAP makes sense
 
 **3. Do you have both OLTP and OLAP workloads?**
+
 - Yes → HTAP might fit
 - No → Use specialized database
 
 **4. Can your team operate distributed systems?**
+
 - Yes → Proceed
 - No → Stick with simpler tools
 
 **5. What's your budget?**
+
 - HTAP is expensive (compute + storage for both workloads)
 - Can you afford headroom for peak load?
 
 **6. What's your tolerance for coupling?**
+
 - HTAP couples OLTP and OLAP
 - Scaling one affects the other
 - Are you okay with that?
@@ -404,20 +428,22 @@ Before choosing HTAP, answer these:
 
 ### Mistakes I Made
 
-**1. Migrated too early**
+#### 1. Migrated too early
 
 We moved to HTAP when our data was 50GB.
 
 We should have:
+
 - Exhausted PostgreSQL first
 - Added read replicas
 - Used materialized views
 
 **Lesson:** Don't solve future problems with current architecture.
 
-**2. Underestimated operational complexity**
+#### 2. Underestimated operational complexity
 
 HTAP databases require:
+
 - Monitoring both rowstore and columnstore
 - Understanding query plans across engines
 - Tuning for mixed workloads
@@ -426,11 +452,12 @@ We weren't ready.
 
 **Lesson:** Operational maturity matters more than features.
 
-**3. Ignored the coupling risk**
+#### 3. Ignored the coupling risk
 
 When analytics queries spiked, OLTP latency suffered.
 
 We had to:
+
 - Add resource limits
 - Separate workloads (defeating the purpose)
 - Scale the entire cluster (expensive)
@@ -440,17 +467,20 @@ We had to:
 ### What I'd Do Instead
 
 **Start simple:**
+
 1. PostgreSQL + read replicas
 2. Materialized views for common aggregations
 3. Monitor freshness SLA
 
 **Migrate when:**
+
 1. Freshness SLA drops below 5 minutes
 2. Data exceeds 500GB
 3. Team has distributed systems experience
 4. Budget supports 2-3x infrastructure cost
 
 **Evaluate alternatives:**
+
 - ClickHouse for pure analytics
 - TimescaleDB for time-series
 - Separate OLTP + OLAP if coupling is a concern

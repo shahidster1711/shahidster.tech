@@ -7,8 +7,6 @@ author: "Shahid Moosa"
 image: "/blog-images/distributed-sql-series-overview.png"
 ---
 
-# Getting Started with Distributed Databases
-
 Distributed databases are the backbone of modern scalable applications. In this comprehensive guide, we'll explore the fundamental concepts that make distributed databases work at scale.
 
 ## Why Distributed Databases?
@@ -36,6 +34,7 @@ CREATE TABLE users (
 ```
 
 **Best practices:**
+
 - Choose high-cardinality keys to avoid hotspots
 - Avoid keys that change frequently
 - Consider query patterns when selecting shard keys
@@ -45,6 +44,7 @@ CREATE TABLE users (
 ### 2. Replication
 
 Replication creates copies of data across nodes for:
+
 - **Fault tolerance**: Survive node failures
 - **Read scalability**: Distribute read queries
 - **Geo-distribution**: Serve users from nearby regions
@@ -61,6 +61,7 @@ const replicaSet = {
 ### 3. Consistency Models
 
 The **CAP theorem** states you can only guarantee 2 of 3:
+
 - **Consistency**: All nodes see the same data
 - **Availability**: Every request gets a response
 - **Partition Tolerance**: System works despite network failures
@@ -102,12 +103,15 @@ interface Order {
 ## Common Pitfalls
 
 ### ❌ Poor Shard Key Selection
+
 Choosing `created_at` as a shard key causes **hotspotting** because all new writes go to the same shard.
 
 ### ❌ Ignoring Network Latency
+
 Cross-shard queries become expensive when shards are geographically distributed.
 
 ### ✅ Solution
+
 Use composite shard keys and co-locate related data:
 
 ```sql
@@ -117,6 +121,7 @@ SHARD KEY (user_id, created_at)
 ## Performance Optimization
 
 ### Index Strategy
+
 Create indexes that respect shard boundaries:
 
 ```sql
@@ -128,6 +133,7 @@ CREATE INDEX idx_order_status ON orders(status);
 ```
 
 ### Query Patterns
+
 Optimize queries to target single shards:
 
 ```sql
