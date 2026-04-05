@@ -124,13 +124,17 @@ jobs:
           echo "♿ Checking diagram accessibility..."
           
           # Check that diagrams have proper titles and descriptions
-          for svg in public/diagrams/*.svg 2>/dev/null; do
-            if [ -f "$svg" ]; then
-              if ! grep -q '<title>' "$svg"; then
-                echo "⚠️ Warning: $svg missing <title> tag for accessibility"
+          if [ -d "public/diagrams" ]; then
+            shopt -s nullglob
+            for svg in public/diagrams/*.svg; do
+              if [ -f "$svg" ]; then
+                if ! grep -q '<title>' "$svg"; then
+                  echo "⚠️ Warning: $svg missing <title> tag for accessibility"
+                fi
               fi
-            fi
-          done
+            done
+            shopt -u nullglob
+          fi
           
           echo "✅ Accessibility check complete"
 

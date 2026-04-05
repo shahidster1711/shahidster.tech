@@ -58,6 +58,11 @@ async function exportDiagramToSVG(diagram: DiagramExport): Promise<void> {
             tempMmdPath,
             diagram.outputPath as `${string}.svg`,
             {
+                puppeteerConfig: {
+                    // GitHub Actions runners block the Chromium sandbox
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                    headless: 'new',
+                },
                 parseMMDOptions: {
                     mermaidConfig: {
                         theme: 'dark',
