@@ -8,9 +8,7 @@ slug: "indexes-everywhere-antipattern"
 image: "/blog-images/indexes-everywhere-antipattern.png"
 ---
 
-# Why "Indexes Everywhere" Destroys Database Performance
-
-> **Part of the Pillar: Query Shape & Execution Reality.** 
+> **Part of the Pillar: Query Shape & Execution Reality.**
 > For foundational execution concepts, see [How Distributed SQL Execution Engines Really Work](/blog/distributed-sql-execution-engines).
 
 ## Content Summary
@@ -57,11 +55,13 @@ This post explains why.
 ### The Mental Model That Breaks
 
 In traditional RDBMS courses, you learn:
+
 1. Queries are slow → add an index
 2. Index makes reads fast → problem solved
 3. Writes "might be a bit slower" → acceptable trade-off
 
 This model works when:
+
 - Data is small (<10M rows)
 - Writes are infrequent (<100/sec)
 - You're on a single node
@@ -99,6 +99,7 @@ flowchart TD
 ```
 
 **One INSERT statement triggers:**
+
 1. Rowstore insert (1 write)
 2. Index updates (N writes, where N = number of indexes)
 3. Columnstore sync (1 write, eventually)
@@ -108,27 +109,28 @@ flowchart TD
 
 ### The Hidden Costs
 
-**1. Disk I/O**
+#### 1. Disk I/O
 
 Every index update is a disk write. B-tree updates require:
+
 - Read the leaf page
 - Modify the page
 - Write the page back
 - Potentially split pages (more writes)
 
-**2. Memory Pressure**
+#### 2. Memory Pressure
 
 Indexes compete for buffer pool space. More indexes = less space for actual data = more cache misses.
 
-**3. Replication Lag**
+#### 3. Replication Lag
 
 Every index update must replicate. With 10 indexes, you've 10x'd your replication traffic.
 
-**4. Lock Contention**
+#### 4. Lock Contention
 
 Index updates acquire locks. More indexes = more lock contention = more waiting.
 
-**5. Recovery Time**
+#### 5. Recovery Time
 
 More indexes = more data to rebuild during recovery = longer downtime.
 
@@ -137,6 +139,7 @@ More indexes = more data to rebuild during recovery = longer downtime.
 ## Write Amplification in HTAP Systems
 
 HTAP databases (like SingleStore) maintain **two storage engines**:
+
 - **Rowstore** (transactional, row-oriented)
 - **Columnstore** (analytical, columnar)
 
@@ -150,31 +153,34 @@ VALUES (12345, 'purchase', NOW(), 99.99);
 ```
 
 **In PostgreSQL (single storage engine):**
+
 - 1 table write
 - 4 index updates (if you have 4 indexes)
 - **Total: 5 writes**
 
 **In SingleStore (dual storage):**
+
 - 1 rowstore write
 - 4 rowstore index updates
 - 1 columnstore sync (asynchronous, but still happens)
 - Potentially columnstore index updates
 - Replication of all of the above (×2 for HA)
 
-**Total: 10-15 writes**
+**Total:** 10-15 writes
 
 ### The Amplification Formula
 
-```
+```text
 Write Amplification = (1 + N_indexes) × (1 + N_replicas) × Storage_Engines
 ```
 
 **Example:**
+
 - 5 indexes
 - 2 replicas (primary + secondary)
 - 2 storage engines (rowstore + columnstore)
 
-```
+```text
 Amplification = (1 + 5) × (1 + 2) × 2 = 36x
 ```
 
@@ -228,11 +234,13 @@ flowchart LR
 ### Real Incident
 
 **Context:**
+
 - E-commerce platform
 - 8 indexes on `orders` table
 - Peak traffic: 60K writes/sec
 
 **What happened:**
+
 1. Black Friday traffic spiked
 2. Index maintenance couldn't keep up
 3. Write buffer filled
@@ -253,6 +261,7 @@ Here's the paradox: **analytics queries often don't benefit from indexes**.
 ### Why Columnar Scans Are Fast
 
 In a columnstore, scanning is cheap because:
+
 1. **Columnar compression**—only read needed columns
 2. **Vectorized execution**—process data in batches
 3. **Parallel scans**—utilize all cores
@@ -268,11 +277,13 @@ GROUP BY product_category;
 ```
 
 **With index on `order_date`:**
+
 - Index lookup (random I/O)
 - Fetch rows (more random I/O)
 - Filter and aggregate
 
 **With columnstore scan:**
+
 - Sequential read of `order_date`, `product_category`, `revenue` columns
 - Filter during scan (SIMD)
 - Parallel aggregation
@@ -282,11 +293,13 @@ GROUP BY product_category;
 ### When Indexes Matter
 
 **Indexes help when:**
+
 - Point lookups (`WHERE user_id = 123`)
 - Range scans with high selectivity (returning <1% of rows)
 - Sorted results (`ORDER BY indexed_column LIMIT 10`)
 
 **Indexes hurt when:**
+
 - Aggregations over large datasets
 - Full scans are inevitable
 - Write cost > read benefit
@@ -331,6 +344,7 @@ flowchart TD
 ### Real Numbers
 
 **Scenario:**
+
 - Table: 500M rows
 - Row size: 200 bytes
 - Data size: 100 GB
@@ -338,11 +352,13 @@ flowchart TD
 - Available RAM: 128 GB
 
 **With indexes:**
+
 - Data + indexes = 200 GB
 - Only 64% fits in memory
 - **Constant cache thrashing**
 
 **Without 4 of those indexes:**
+
 - Data + 1 index = 120 GB
 - 94% fits in memory
 - **Dramatically fewer cache misses**
@@ -356,6 +372,7 @@ In distributed systems, indexes multiply network traffic.
 ### Single-Node Replication
 
 **Write to primary:**
+
 1. Insert row
 2. Update N indexes
 3. Replicate to secondary
@@ -367,6 +384,7 @@ In distributed systems, indexes multiply network traffic.
 ### Distributed Replication
 
 **Write to sharded cluster:**
+
 1. Insert row (local)
 2. Update N local indexes
 3. Replicate to local replica
@@ -380,11 +398,13 @@ In distributed systems, indexes multiply network traffic.
 ### Example
 
 **Setup:**
+
 - 10 shards
 - 2 replicas per shard
 - 1 global secondary index on `email` (not sharded)
 
 **One INSERT with a global index:**
+
 1. Write to local shard
 2. Replicate to local replica (1 network hop)
 3. Update global index (broadcast to all shards)
@@ -399,12 +419,14 @@ In distributed systems, indexes multiply network traffic.
 ## Why "It Worked in Staging" Is Meaningless
 
 Your staging environment:
+
 - **Data:** 1M rows
 - **Write rate:** 100/sec
 - **Indexes:** 8
 - **Performance:** Great
 
 Production:
+
 - **Data:** 500M rows
 - **Write rate:** 50K/sec
 - **Indexes:** Same 8
@@ -412,22 +434,22 @@ Production:
 
 ### What Changed?
 
-**1. Index Size**
+#### 1. Index Size
 
 Staging: 8 indexes × 100 MB each = 800 MB (fits in RAM)  
 Production: 8 indexes × 20 GB each = 160 GB (doesn't fit)
 
-**2. Write Amplification**
+#### 2. Write Amplification
 
 Staging: 100 writes/sec × 8 indexes = 800 index updates/sec (trivial)  
 Production: 50K writes/sec × 8 indexes = 400K index updates/sec (saturates I/O)
 
-**3. Rebalancing Cost**
+#### 3. Rebalancing Cost
 
 Staging: B-tree rarely needs rebalancing  
 Production: B-tree constantly rebalancing under write pressure
 
-**4. Replication Lag**
+#### 4. Replication Lag
 
 Staging: Insignificant  
 Production: Indexes cause seconds of replication lag
@@ -440,32 +462,34 @@ Indexes aren't evil. Reflexive indexing is.
 
 ### Good Reasons to Add an Index
 
-**1. High-Selectivity Point Lookups**
+#### 1. High-Selectivity Point Lookups
 
 ```sql
 SELECT * FROM users WHERE email = 'user@example.com';
 ```
 
 **If this query:**
+
 - Runs frequently (thousands of times per second)
 - Returns 1 row from millions
 - Is latency-sensitive
 
 **Then:** Index `email`
 
-**2. Range Queries with Low Cardinality**
+#### 2. Range Queries with Low Cardinality
 
 ```sql
 SELECT * FROM orders WHERE user_id = 123 AND status = 'pending';
 ```
 
 **If:**
+
 - `user_id` is highly selective (user has ~10 orders in 10M table)
 - Query runs often
 
 **Then:** Composite index on `(user_id, status)`
 
-**3. Enforcing Uniqueness**
+#### 3. Enforcing Uniqueness
 
 ```sql
 CREATE UNIQUE INDEX idx_users_email ON users(email);
@@ -475,19 +499,19 @@ CREATE UNIQUE INDEX idx_users_email ON users(email);
 
 ### Bad Reasons to Add an Index
 
-**1. "This query runs slowly sometimes"**
+#### 1. "This query runs slowly sometimes"
 
 **Question:** How often? Is it worth the write cost?
 
-**2. "The query plan says it's doing a full scan"**
+#### 2. "The query plan says it's doing a full scan"
 
 **Question:** Is a full scan actually slow for this query?
 
-**3. "Indexes are free, right?"**
+#### 3. "Indexes are free, right?"
 
 **Answer:** See this entire post.
 
-**4. "Let's index everything to cover all queries"**
+#### 4. "Let's index everything to cover all queries"
 
 **Result:** Optimize for nothing, destroy write throughput.
 
@@ -583,6 +607,7 @@ flowchart LR
 Don't index preemptively. Let production queries tell you what's needed.
 
 **Process:**
+
 1. Deploy with primary keys and unique constraints only
 2. Monitor slow query log
 3. Identify frequently-run, high-latency queries
@@ -592,12 +617,14 @@ Don't index preemptively. Let production queries tell you what's needed.
 ### 2. Track Index Usage Metrics
 
 **For every index, track:**
+
 - Reads per second (beneficial)
 - Writes per second (cost)
 - Memory footprint
 - Age (time since creation)
 
 **Drop indexes where:**
+
 - Reads < 10/sec
 - Cost > benefit
 
@@ -633,6 +660,7 @@ If a table receives heavy writes and your queries can tolerate scans, **don't in
 For large indexes, reindexing can block writes.
 
 **Strategy:**
+
 - Schedule `REINDEX` during maintenance windows
 - Use `CONCURRENTLY` option (if available)
 - Monitor replication lag during reindexing
@@ -640,6 +668,7 @@ For large indexes, reindexing can block writes.
 ### 6. Test Index Changes Under Load
 
 **Before adding an index in production:**
+
 1. Add it to a load-testing environment
 2. Simulate production write rate
 3. Monitor write latency, memory, I/O
@@ -652,6 +681,7 @@ For large indexes, reindexing can block writes.
 Indexes are a **trade-off**, not a free optimization.
 
 Every index:
+
 - Slows writes
 - Consumes memory
 - Increases replication lag

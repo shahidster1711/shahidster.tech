@@ -8,8 +8,6 @@ slug: "singlestore-production-lessons"
 image: "/blog-images/singlestore-production-lessons.png"
 ---
 
-# Lessons Learned Running SingleStore in Production (The Painful Ones)
-
 > [!NOTE]
 > This post is Part 4 of the **[Distributed SQL Deep Dive](/blog/distributed-sql-series-overview)** series.
 
@@ -64,12 +62,14 @@ flowchart TD
 ```
 
 **The rowstore** (transactional data) needs memory for:
+
 - Active transactions
 - MVCC versioning
 - Index pages
 - Lock tables
 
 **The columnstore** (analytical data) needs memory for:
+
 - Segment decompression
 - Hash table builds during aggregations
 - Sort buffers
@@ -78,6 +78,7 @@ flowchart TD
 **Background merges** consolidate small segments into larger ones. If they run out of memory, they spill to disk. This is 2-5x slower and creates cascade failures during heavy write periods.
 
 **Replication** doubles memory pressure because you're holding:
+
 - Original data in memory
 - Replicated data being written
 - Replication log entries
@@ -98,6 +99,7 @@ GROUP BY user_id;
 Simple query. On PostgreSQL, this would be 100ms.
 
 On SingleStore, during peak traffic:
+
 - Query needs to decompress ~500MB of columnstore segments
 - Build hash table for 2M unique users
 - Aggregate across 8 leaf nodes
@@ -120,17 +122,18 @@ We had 10 concurrent dashboards running this query.
 
 **Memory sizing formula:**
 
-```
+```text
 Total Memory = (Data * 0.3) + (Peak Query Concurrency * Max Query Memory) + (Write Buffer * 2) + 20% safety
 ```
 
 For our workload:
+
 - Data: 2TB
 - Peak queries: 20
 - Max query memory: 8GB
 - Write buffer: 50GB
 
-**Required: 600GB + 160GB + 100GB + 150GB = ~1TB RAM**
+**Required:** 600GB + 160GB + 100GB + 150GB = ~1TB RAM
 
 We had 384GB total (128GB × 3 nodes).
 
@@ -194,7 +197,7 @@ sequenceDiagram
     Agg-->>App: Final result
 ```
 
-**Total data movement: 2.8GB**
+**Total data movement:** 2.8GB
 
 For a query that returns 50KB of results.
 
@@ -210,11 +213,12 @@ ALTER TABLE users SHARD KEY (user_id);
 ```
 
 After this change:
+
 - No broadcast
 - Co-located joins
 - Network transfer: <1MB
 
-**Query time: 12 seconds → 200ms**
+**Query time:** 12 seconds → 200ms
 
 ### The Pattern
 
@@ -268,7 +272,7 @@ flowchart TD
     style SLOW3 fill:#ef4444,stroke:#dc2626,color:#f1f5f9
 ```
 
-### The Incident
+### The Incident: Analytics Contention
 
 **Context:**  
 E-commerce platform. Black Friday. Peak traffic: 50K writes/sec.
@@ -285,18 +289,20 @@ Launched a real-time fraud dashboard powered by a complex analytical query that 
 5. Connection pool exhausts
 6. API unavailable
 
-**Duration: 22 minutes**
+**Duration:** 22 minutes
 
 ### Root Cause
 
 The fraud query was I/O bound, reading gigabytes of columnstore data.
 
 This saturated disk I/O, causing:
+
 - Rowstore writes to queue
 - WAL fsync to slow down
 - Transaction latency to spike
 
 We had three workloads fighting for the same disk:
+
 1. Transactional writes (critical)
 2. Analytical scans (optional)
 3. Background merges (necessary)
@@ -306,11 +312,13 @@ We had three workloads fighting for the same disk:
 ### The Fix
 
 **Short term:**
+
 - Moved dashboard to read replica
 - Added query timeout (30s max)
 - Implemented query queue limits
 
 **Long term:**
+
 - Separate OLTP and OLAP clusters
 - Replicate data from OLTP to OLAP
 - Accept seconds of lag for analytics
@@ -344,9 +352,10 @@ ALTER TABLE orders ADD COLUMN affiliate_id INT;
 4. **Queries queued**—table locked during rebuild
 5. **Connection pool exhausted**—timeouts cascaded
 
-### The Pattern
+### The Pattern (Schema Changes: The Operational Blind Spot)
 
 Schema changes in distributed systems:
+
 - Touch every partition
 - Require inter-node coordination
 - Block concurrent writes
@@ -354,7 +363,7 @@ Schema changes in distributed systems:
 
 ### What We Do Now
 
-**1. Add columns as nullable**
+#### 1. Add columns as nullable
 
 ```sql
 -- Bad: NOT NULL requires default value fill
@@ -366,13 +375,13 @@ ALTER TABLE orders ADD COLUMN status VARCHAR(20);
 UPDATE orders SET status = 'pending' WHERE status IS NULL LIMIT 100000;
 ```
 
-**2. Test on read replica first**
+#### 2. Test on read replica first
 
-**3. Schedule during maintenance windows**
+#### 3. Schedule during maintenance windows
 
-**4. Monitor replication lag**
+#### 4. Monitor replication lag
 
-**5. Have rollback plan**
+#### 5. Have rollback plan
 
 ---
 
@@ -385,11 +394,13 @@ UPDATE orders SET status = 'pending' WHERE status IS NULL LIMIT 100000;
 ### The Failure Mode Nobody Expects
 
 **Setup:**
+
 - 3-node cluster
 - Synchronous replication
 - "5 nines" SLA from vendor
 
 **Incident:**
+
 - Primary leaf node fails (disk corruption)
 - Automatic failover to replica
 - **Failover time: 45 seconds**
@@ -409,7 +420,7 @@ For a system doing 50K TPS, 45 seconds = **2.25 million failed requests**.
 
 **Active-active with client-side routing:**
 
-```
+```text
 App → Load Balancer → [Node 1, Node 2, Node 3]
                        ↓        ↓        ↓
                      All nodes accept writes
@@ -453,6 +464,7 @@ flowchart LR
 **Alert:** "API response time P99 > 1 second"
 
 **Investigation:**
+
 1. Check API servers: Normal
 2. Check database: Queries slow on Leaf 3
 3. Check Leaf 3 metrics: Disk I/O saturation
@@ -464,9 +476,10 @@ Batch job on Leaf 1 caused replication lag → Leaf 3 caught up → disk I/O spi
 
 **The alert happened on the application. The root cause was a batch job on a different node.**
 
-### The Pattern
+### The Pattern: Distributed Failures
 
 In distributed systems:
+
 - Cause and effect are decoupled in time
 - Cause and effect are decoupled in space
 - Monitoring must be cluster-wide, not node-centric
@@ -474,9 +487,11 @@ In distributed systems:
 ### What We Monitor Now
 
 Not just:
+
 - CPU, memory, disk per node
 
 But also:
+
 - Replication lag between nodes
 - Query latency by shard
 - Network saturation between nodes
@@ -553,7 +568,7 @@ flowchart TD
 
 Use this formula:
 
-```
+```text
 Memory = (Active Data × 0.3) + (Query Working Sets × Concurrency) + 30% overhead
 ```
 
@@ -564,6 +579,7 @@ Don't cheap out. If the math says 512GB, provision 768GB.
 Don't wait for production pain.
 
 **Start with:**
+
 - OLTP cluster (rowstore-heavy, small nodes, many replicas)
 - OLAP cluster (columnstore-heavy, large nodes, read replicas)
 - Real-time replication between them
@@ -573,6 +589,7 @@ Accept seconds of lag for analytics.
 ### 3. Shard Keys Are Schema Decisions
 
 Shard key is the most important schema choice. It determines:
+
 - Query performance
 - Data distribution
 - Operational complexity
@@ -582,6 +599,7 @@ Shard key is the most important schema choice. It determines:
 ### 4. Treat Schema Changes as Deployments
 
 Schema migration process:
+
 1. Test on replica
 2. Measure time and resource impact
 3. Schedule maintenance window
@@ -591,6 +609,7 @@ Schema migration process:
 ### 5. Monitor Leading Indicators
 
 Don't wait for alerts. Watch:
+
 - Memory pressure trends (before OOM)
 - Replication lag growth (before divergence)
 - Segment merge backlog (before compaction stall)
@@ -600,6 +619,7 @@ Don't wait for alerts. Watch:
 Don't just test "can it handle 100K TPS?"
 
 Test:
+
 - What happens when one workload spikes?
 - What happens during failover?
 - What happens when memory is 90% full?
@@ -630,4 +650,3 @@ And always, always size for memory.
 ---
 
 **Have your own production war stories?** I'd love to hear them. [Email me](mailto:connect2shahidmoosa@gmail.com) or connect on [LinkedIn](https://linkedin.com).
-
