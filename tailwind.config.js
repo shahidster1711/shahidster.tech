@@ -6,6 +6,13 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        obsidian: '#08090a',
+        'linear-indigo': '#5e6ad2',
+        'linear-blue': '#7170ff',
+        luminous: '#f7f8f8',
+        'silver-gray': '#8a8f98',
+      },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'fade-in-down': 'fadeInDown 0.5s ease-out',
