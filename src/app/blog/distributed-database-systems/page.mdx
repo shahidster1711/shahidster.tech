@@ -1,0 +1,83 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { CLUSTER_ARTICLES } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Distributed Database Systems: A Senior Engineer’s Guide | Shahid Moosa',
+  description: 'A technical deep dive into distributed database architectures, consistency models, and sharding strategies for high-scale systems.',
+  alternates: {
+    canonical: 'https://shahidster.tech/blog/distributed-database-systems',
+  },
+};
+
+<ArticleJsonLd
+  headline="Distributed Database Systems: A Senior Engineer’s Guide"
+  description="A technical deep dive into distributed database architectures, consistency models, and sharding strategies for high-scale systems."
+  datePublished="2024-03-20"
+  slug="/blog/distributed-database-systems"
+/>
+
+# Distributed Database Systems: A Senior Engineer’s Guide
+
+In my years supporting cloud-native databases like **SingleStore** and working with **AWS RDS**, I’ve found that the leap from a single-node RDBMS to a distributed system is where most engineering teams stumble. It’s not just about adding nodes; it’s about accepting fundamental trade-offs in consistency, availability, and partition tolerance.
+
+This guide acts as a central hub for understanding the practical realities of distributed data systems.
+
+## The Core Architecture
+
+At a high level, distributed databases solve for two things: **storage capacity** (via partitioning) and **compute capacity** (via parallel processing).
+
+### Shared-Nothing vs. Shared-Disk
+
+Modern cloud databases typically fall into two architectures:
+
+1.  **Shared-Nothing (e.g., SingleStore, Cassandra):** Each node has its own disk and memory. The data is sharded across nodes.
+    * *Pro:* Linear scalability.
+    * *Con:* Rebalancing data (node failure/addition) is network I/O intensive.
+2.  **Shared-Disk (e.g., Aurora):** Compute nodes are stateless; storage is offloaded to a distributed storage layer.
+    * *Pro:* Fast failover and scaling.
+    * *Con:* Write scalability is limited by the storage layer's coordination.
+
+*Read more about specific SQL implementations in my guide on [Distributed SQL Architecture](/blog/distributed-sql-architecture).*
+
+## Sharding and Partitioning Strategies
+
+Bad schema design in a distributed system is a performance death sentence. If you don't choose the right shard key, you end up with **data skew** (one node doing all the work) or **scatter-gather queries** (querying every node for a single row).
+
+* **Hash Partitioning:** Distributes data evenly but makes range queries expensive.
+* **Range Partitioning:** Good for time-series but creates hotspots on the "current" partition.
+
+*I dive deeper into avoiding hotspots in [Schema Design for Distributed SQL](/blog/schema-design).*
+
+## Consistency Models in Production
+
+We all know CAP theorem, but in production, it's rarely a binary choice between CP and AP. It’s about **PACELC**: If there is a partition (P), how does the system trade off availability (A) and consistency (C)? Else (E), how does it trade off latency (L) and consistency (C)?
+
+For real-time analytics, we often accept eventual consistency for the sake of ingestion speed. 
+*See [Real-Time Analytics: Consistency vs. Latency Trade-offs](/blog/real-time-analytics-tradeoffs).*
+
+## Reliability and Failure Modes
+
+In a distributed system, partial failure is the default state. A disk *will* be slow. A network packet *will* drop.
+
+* **Jitter:** Use exponential backoff with jitter for retries.
+* **Circuit Breakers:** Fail fast rather than hanging threads.
+* **Quorums:** Understand `R + W > N` to guarantee read-after-write consistency.
+
+*Read my post-mortem analysis on [Production Database Failures](/blog/production-database-failures) for real-world examples.*
+
+## Operational Excellence
+
+Running these systems requires rigorous automation. Manual failovers are a recipe for extended downtime. Infrastructure as Code (Terraform) and configuration management (Ansible) are non-negotiable.
+
+* [Database Automation: Terraform & Ansible](/blog/database-automation)
+* [High Availability Patterns](/blog/high-availability-reliability)
+
+---
+
+### Further Reading
+
+* [Debugging Query Performance](/blog/query-performance-debugging)
+* [Data Ingestion Pipelines](/blog/data-ingestion-pipelines)
+* [Row vs Column Storage](/blog/row-vs-column-storage)
+
+*[Mermaid Chart Prompt: Create a diagram showing a Shared-Nothing architecture with Aggregator Nodes and Leaf Nodes, illustrating a scatter-gather query pattern]*

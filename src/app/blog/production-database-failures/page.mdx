@@ -1,0 +1,28 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Post-Mortem: Real-World Database Failures | Shahid Moosa',
+  description: 'Analysis of common failure modes: disk exhaustion, connection storms, and split-brain scenarios.',
+};
+
+<ArticleJsonLd
+  headline="Post-Mortem: Analyzing Real-World Database Failures"
+  description="Analysis of common failure modes: disk exhaustion, connection storms, and split-brain scenarios."
+  datePublished="2024-03-28"
+  slug="/blog/production-database-failures"
+/>
+
+# Production Database Failures
+
+## Case Study: The Connection Storm
+
+* **Scenario:** App servers restarted simultaneously.
+* **Impact:** DB CPU spiked to 100% due to TLS handshakes.
+* **Fix:** Implement connection pooling (PgBouncer) and randomized startup delays on app servers.
+
+## Case Study: Transaction Wraparound
+
+In PostgreSQL, failing to vacuum aggressive enough can lead to transaction ID wraparound, forcing the DB into read-only mode. **Monitoring `age(datfrozenxid)` is mandatory.**
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})

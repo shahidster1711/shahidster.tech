@@ -1,0 +1,29 @@
+import { ArticleJsonLd } from '@/components/JsonLd';
+import { PILLAR_PAGE } from '@/lib/blog-graph';
+
+export const metadata = {
+  title: 'Debugging Query Performance in Distributed Systems | Shahid Moosa',
+  description: 'Techniques for analyzing query profiles, identifying skew, and optimizing distributed joins.',
+};
+
+<ArticleJsonLd
+  headline="Debugging Query Performance in Distributed Systems"
+  description="Techniques for analyzing query profiles, identifying skew, and optimizing distributed joins."
+  datePublished="2024-03-22"
+  slug="/blog/query-performance-debugging"
+/>
+
+# Debugging Query Performance
+
+In distributed systems, `EXPLAIN` plans tell only half the story. You need `PROFILE` to see actual execution metrics.
+
+## Common Culprits
+
+1.  **Data Skew:** One partition holds 90% of the data. The query is as slow as the slowest node (tail latency).
+    * *Fix:* Reshard on a column with higher cardinality.
+2.  **Memory Spills:** Aggregations (GROUP BY) that exceed available RAM spill to disk, killing performance.
+3.  **Implicit Casts:** Joining `INT` to `VARCHAR` often prevents index usage.
+
+*Diagram Prompt: Visualizing tail latency caused by a skewed partition.*
+
+[Back to Distributed Systems Guide](${PILLAR_PAGE.slug})
